@@ -228,6 +228,12 @@ footer a{color:var(--mut);text-decoration:underline}
     <a class="sub" href="#r-actions">Message methods</a>
     <a class="sub" href="#r-examples">Examples</a>
   </details>
+  <a href="#rich">Rich messages</a>
+  <details><summary>Rich topics</summary>
+    <a class="sub" href="#rich-md">Account markdown</a>
+    <a class="sub" href="#rich-screen">Screen API</a>
+    <a class="sub" href="#rich-fallback">Plain fallback</a>
+  </details>
   <a href="#module">Writing a module</a>
   <details><summary>Module topics</summary>
     <a class="sub" href="#mod-inline">Inline and the bot</a>
@@ -646,7 +652,106 @@ docker run -d -p 8080:8080 -v ataraxia-data:/data --name ataraxia ataraxia</code
   <h2>Output and other languages</h2>
   <p>The last expression's value is shown automatically; <code>print()</code> output is captured and shown alongside the execution time. Errors come back as a traceback: the last line usually names the cause. Phone numbers, session strings, tokens and keys are masked in output; that is a safety net, not a reason to print secrets. Long output becomes a paginated inline form or a file.</p>
   <p>For other languages use <code>.ecpp</code> (C++), <code>.ec</code> (C) or <code>.enode</code> (JavaScript). Their compilers or runtimes must be installed separately. They do not provide the Python variable <code>r</code>.</p>
-  <div class="pgr"><a href="#perms">← Security</a><a href="#module">Writing a module →</a></div>
+  <div class="pgr"><a href="#perms">← Security</a><a href="#rich">Rich messages →</a></div>
+</section>
+
+<section id="rich">
+  <h1>Rich messages</h1>
+  <p class="lead">Telegram can render rich messages: headings, tables, blockquotes, expandable blocks. ataraxia sends them two ways: markdown from your account and HTML screens through the inline bot.</p>
+
+  <h2>Two paths, one goal</h2>
+  <div class="tw"><table><thead><tr><th>Way</th><th>Sent as</th><th>What you get</th><th>Who can use it</th></tr></thead><tbody>
+    <tr><td><code>rich="markdown"</code></td><td>Your account</td><td>Headings, tables, nested lists, code blocks</td><td>Everyone, no Premium needed</td></tr>
+    <tr><td><code>Screen</code></td><td>The inline bot</td><td>All of that plus in-text buttons and a bottom keyboard</td><td>Everyone; custom emoji require Premium</td></tr>
+  </tbody></table></div>
+  <p>Telegram renders both itself: you send the source, the client draws it. If the chat or client rejects the format, ataraxia falls back to plain text with buttons at the bottom on its own; the message is not lost.</p>
+
+  <h2 id="rich-md">Account markdown</h2>
+  <p>The simplest route is <code>utils.answer</code>: its <code>rich</code> parameter takes a markdown source, and the message goes out from your account, not the bot.</p>
+  <div class="codetop"><span>in a module or in .e</span></div>
+  <pre><code>await utils.answer(
+    message,
+    rich=(
+        "# Report\n"
+        "| Metric | Value |\n"
+        "|---|---|\n"
+        "| Ping | 42 ms |\n"
+        "| Uptime | 3 days |\n\n"
+        "- **CPU**: 12%\n"
+        "- **RAM**: 210 MB\n"
+    ),
+)</code></pre>
+  <p>The <code>markdown=</code> parameter of <code>utils.answer</code> is the same thing as <code>rich=</code>. The difference only matters inside inline forms: there <code>markdown</code> is sent by the bot, while <code>rich</code> comes from your account.</p>
+  <p>Supported markdown: <code>#</code> headings, tables, nested lists, code blocks, quotes. Telegram turns the source into a rich message itself, so the text is never parsed or split into pages: what you wrote goes out whole.</p>
+
+  <h2 id="rich-screen">The Screen API</h2>
+  <p>When you need buttons inside the text, build a screen. <code>Screen</code> is a rich HTML constructor: the body is assembled from fragments, and in-text taps register as ordinary form callbacks with the same security checks.</p>
+  <div class="codetop"><span>inside a module class</span></div>
+  <pre><code>from ..inline.screens import Screen
+
+def build_screen(self) -> Screen:
+    k = self.inline.screen()          # aware of the owner's Premium
+    k.add(
+        f"{k.icon('settings')} <b>Menu</b> {k.badge('3 items', 'primary')}",
+        k.quote("Menu description"),
+    )
+    k.add(
+        k.details(
+            f"{k.icon('module')} <b>Sections</b> · 2",
+            "\n".join(
+                k.tap(name, self.section_cb, name) + f" {k.badge(n)}"
+                for name, n in [("Main", 5), ("Other", 2)]
+            ),
+        )
+    )
+    k.add(
+        k.table([
+            ["Option", "Value"],
+            ["Language", "en"],
+            ["Prefix", "."],
+        ])
+    )
+    k.keyboard(
+        [k.input("Add", self.add_input, "Add what?", icon="add")],
+        k.footer(self.back_home),
+    )
+    return k
+
+@loader.command()
+async def menucmd(self, message):
+    """Open menu"""
+    await self.inline.form(message=message, rich_html=self.build_screen())</code></pre>
+
+  <h3>Body fragments</h3>
+  <div class="tw"><table><thead><tr><th>Method</th><th>What it draws</th></tr></thead><tbody>
+    <tr><td><code>k.tap(label, cb, *args)</code></td><td>An in-text button; the callback receives <code>call</code> and the args. Styles: <code>primary</code>, <code>success</code>, <code>danger</code>, <code>link</code></td></tr>
+    <tr><td><code>k.copy(label, value)</code></td><td>A copy button, values up to 256 characters</td></tr>
+    <tr><td><code>k.badge(text, style)</code></td><td>A disabled badge, e.g. a counter</td></tr>
+    <tr><td><code>k.row(*buttons, align=)</code></td><td>A row of several buttons, up to 8 per row</td></tr>
+    <tr><td><code>k.details(summary, body, open=)</code></td><td>An expandable block</td></tr>
+    <tr><td><code>k.table(rows, keys=)</code></td><td>A table; the first row is the header by default</td></tr>
+    <tr><td><code>k.quote(body, expandable=)</code></td><td>A blockquote, plain or expandable</td></tr>
+    <tr><td><code>k.image(url)</code></td><td>An image</td></tr>
+    <tr><td><code>k.icon("settings")</code></td><td>An icon: custom emoji with Premium, a plain one without</td></tr>
+  </tbody></table></div>
+
+  <h3>Bottom keyboard and input</h3>
+  <div class="tw"><table><thead><tr><th>Method</th><th>What it does</th></tr></thead><tbody>
+    <tr><td><code>k.button(label, cb, *args)</code></td><td>An ordinary bottom button</td></tr>
+    <tr><td><code>k.input(label, handler, prompt)</code></td><td>A button asking for a value: <code>handler(call, value)</code></td></tr>
+    <tr><td><code>k.copy_button(label, value)</code></td><td>A bottom copy button</td></tr>
+    <tr><td><code>k.back(cb)</code>, <code>k.close()</code></td><td>"Back" and "Close"</td></tr>
+    <tr><td><code>k.footer(back_cb)</code></td><td>A ready "Back + Close" row</td></tr>
+    <tr><td><code>k.pager(cb, page, pages)</code></td><td>"‹ 1 / N ›"; <code>cb(call, page=...)</code>. Pages are cut by <code>k.page(items, page, size)</code></td></tr>
+    <tr><td><code>k.reply(handler)</code></td><td>Lets the user reply to the screen message with text: <code>handler(call, text)</code>. The reply is deleted</td></tr>
+  </tbody></table></div>
+  <p>A screen is edited like any form: <code>await call.edit(rich_html=another_screen)</code>. The helper <code>await self.inline.show(call, screen)</code> does that and also shows a toast: set <code>screen.toast = "Saved"</code> before showing, and <code>screen.alert = True</code> turns it into a popup. For a warning in the body there is <code>k.warn(text)</code>.</p>
+
+  <h2 id="rich-fallback">Plain fallback</h2>
+  <p>An old client, a chat without support or a send error does not break the message. When a rich form fails, ataraxia converts the screen into ordinary Telegram HTML: tables become "key: value" lines, in-text taps move to the bottom keyboard, expandable blocks unfold. The same happens in <code>utils.answer</code>: the markdown goes out as is, and on error it is retried as plain text.</p>
+  <p>One caveat: rich HTML cannot be combined with media in one form; <code>photo</code>, <code>gif</code>, <code>file</code>, <code>video</code> and the rest do not mix with <code>rich_html</code>. An image inside a rich message is added with an <code>&lt;img&gt;</code> tag in the HTML itself.</p>
+
+  <div class="pgr"><a href="#r">← .e and reply</a><a href="#module">Writing a module →</a></div>
 </section>
 
 <section id="module">
@@ -751,8 +856,8 @@ async def ask(self, message, args):
 
 __version__ = (1, 0, 0)</code></pre>
   <p>The loader reads these lines to display the developer, install a uv dependency, install a system package, and enforce a minimum ataraxia version. The special scopes <code># scope: ffmpeg</code> and <code># scope: inline</code> require ffmpeg and a configured inline bot. Imports of <code>telethon</code> and <code>herokutl</code> are redirected to ataraxia-tl; test older modules anyway. For working examples, read <code>ataraxia/modules/translations.py</code> and <code>ataraxia/modules/test.py</code>.</p>
-  <p>For translations a module can define <code>strings_ru</code> and other suffixes. Shared libraries load via <code>self.import_lib(url)</code> with a <code>loader.Library</code> subclass whose name ends in <code>Lib</code>. Helpers like <code>utils.escape_html</code> and <code>utils.get_chat_id</code> live in <code>ataraxia/utils/</code>.</p>
-  <div class="pgr"><a href="#r">← .e and reply</a><a href="#faq">Troubleshooting →</a></div>
+  <p>For translations a module can define <code>strings_ru</code> and other suffixes: the right variant is picked by the current language, with the common <code>strings</code> as the fallback. Shared libraries load via <code>self.import_lib(url)</code> with a <code>loader.Library</code> subclass whose name ends in <code>Lib</code>. Helpers like <code>utils.escape_html</code> and <code>utils.get_chat_id</code> live in <code>ataraxia/utils/</code>.</p>
+  <div class="pgr"><a href="#rich">← Rich messages</a><a href="#faq">Troubleshooting →</a></div>
 </section>
 
 <section id="faq">

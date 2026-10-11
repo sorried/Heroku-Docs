@@ -228,6 +228,12 @@ footer a{color:var(--mut);text-decoration:underline}
     <a class="sub" href="#r-actions">Методы r</a>
     <a class="sub" href="#r-examples">Примеры .e</a>
   </details>
+  <a href="#rich">Rich messages</a>
+  <details><summary>Подразделы rich</summary>
+    <a class="sub" href="#rich-md">Markdown от аккаунта</a>
+    <a class="sub" href="#rich-screen">Экраны Screen</a>
+    <a class="sub" href="#rich-fallback">Запасной вывод</a>
+  </details>
   <a href="#module">Свой модуль</a>
   <details><summary>Подразделы модулей</summary>
     <a class="sub" href="#mod-inline">Инлайн и бот</a>
@@ -882,7 +888,115 @@ uv run -m ataraxia</code></pre>
   <h2>Если нужен не Python</h2>
   <p><code>.ecpp</code> запускает C++ через g++, <code>.ec</code> C через тот же g++, <code>.enode</code> JavaScript через node. Эти компиляторы и рантаймы должны быть установлены отдельно. Можно передать код после команды или ответить командой на сообщение с кодом.</p>
 
-  <div class="pgr"><a href="#perms">← Права</a><a href="#module">Свой модуль →</a></div>
+  <div class="pgr"><a href="#perms">← Права</a><a href="#rich">Rich messages →</a></div>
+</section>
+
+<section id="rich">
+  <h1>Rich messages</h1>
+  <p class="lead">Telegram умеет рисовать богатые сообщения: заголовки, таблицы, цитаты, раскрывающиеся блоки. ataraxia отправляет их двумя способами: markdown от вашего аккаунта и HTML-экраны через инлайн-бота.</p>
+
+  <h2>Два пути, одна цель</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Способ</th><th>От кого</th><th>Что дает</th><th>Кому доступно</th></tr></thead>
+    <tbody>
+      <tr><td><code>rich="markdown"</code></td><td>От вашего аккаунта</td><td>Заголовки, таблицы, вложенные списки, блоки кода</td><td>Всем, премиум не нужен</td></tr>
+      <tr><td>Экран <code>Screen</code></td><td>Через инлайн-бота</td><td>Всё то же плюс кнопки внутри текста и нижняя клавиатура</td><td>Всем, но кастомные эмодзи только с премиумом</td></tr>
+    </tbody>
+  </table></div>
+  <p>Оба способа рендерит сам Telegram: вы отправляете исходник, а клиент рисует. Если чат или клиент формат не принял, ataraxia сама упадет на обычный текст с кнопками внизу, сообщение не потеряется.</p>
+
+  <h2 id="rich-md">Markdown от аккаунта</h2>
+  <p>Проще всего через <code>utils.answer</code>: параметр <code>rich</code> принимает markdown-исходник, и сообщение уходит от вашего аккаунта, а не от бота.</p>
+  <div class="codetop"><span>в модуле или в .e</span></div>
+  <pre><code>await utils.answer(
+    message,
+    rich=(
+        "# Отчёт\n"
+        "| Метрика | Значение |\n"
+        "|---|---|\n"
+        "| Пинг | 42 мс |\n"
+        "| Аптайм | 3 дня |\n\n"
+        "- **CPU**: 12%\n"
+        "- **RAM**: 210 MB\n"
+    ),
+)</code></pre>
+  <p>Параметр <code>markdown=</code> у <code>utils.answer</code> это то же самое, что <code>rich=</code>. Разница появляется только в инлайн-формах: там <code>markdown</code> уходит от бота, а <code>rich</code> от аккаунта.</p>
+  <p>Поддерживаемый markdown: заголовки <code>#</code>, таблицы, вложенные списки, блоки кода, цитаты. Telegram сам превращает исходник в богатое сообщение, поэтому текст не парсится и не режется на страницы: что написали, то и уйдет целиком.</p>
+
+  <h2 id="rich-screen">Экраны Screen</h2>
+  <p>Когда нужны кнопки внутри текста, соберите экран. <code>Screen</code> это конструктор rich HTML: тело набирается фрагментами, а тапы в тексте регистрируются как обычные колбэки формы, с той же проверкой прав.</p>
+  <div class="codetop"><span>фрагмент модуля</span></div>
+  <pre><code>from ..inline.screens import Screen
+
+def build_screen(self) -> Screen:
+    k = self.inline.screen()          # экран, aware премиума владельца
+    k.add(
+        f"{k.icon('settings')} <b>Меню</b> {k.badge('3 пункта', 'primary')}",
+        k.quote("Описание меню"),
+    )
+    k.add(
+        k.details(
+            f"{k.icon('module')} <b>Разделы</b> · 2",
+            "\n".join(
+                k.tap(name, self.section_cb, name) + f" {k.badge(n)}"
+                for name, n in [("Основное", 5), ("Прочее", 2)]
+            ),
+        )
+    )
+    k.add(
+        k.table([
+            ["Параметр", "Значение"],
+            ["Язык", "ru"],
+            ["Префикс", "."],
+        ])
+    )
+    k.keyboard(
+        [k.input("Добавить", self.add_input, "Что добавить?", icon="add")],
+        k.footer(self.back_home),
+    )
+    return k
+
+@loader.command()
+async def menucmd(self, message):
+    """Открыть меню"""
+    await self.inline.form(message=message, rich_html=self.build_screen())</code></pre>
+
+  <h3>Фрагменты тела</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Метод</th><th>Что рисует</th></tr></thead>
+    <tbody>
+      <tr><td><code>k.tap(label, cb, *args)</code></td><td>Кнопка внутри текста; колбэк получает <code>call</code> и аргументы. Стили: <code>primary</code>, <code>success</code>, <code>danger</code>, <code>link</code></td></tr>
+      <tr><td><code>k.copy(label, value)</code></td><td>Кнопка копирования, до 256 символов значения</td></tr>
+      <tr><td><code>k.badge(text, style)</code></td><td>Неактивная плашка, например счетчик</td></tr>
+      <tr><td><code>k.row(*buttons, align=)</code></td><td>Ряд из нескольких кнопок, до 8 в ряду</td></tr>
+      <tr><td><code>k.details(summary, body, open=)</code></td><td>Раскрывающийся блок</td></tr>
+      <tr><td><code>k.table(rows, keys=)</code></td><td>Таблицу; первая строка по умолчанию заголовок</td></tr>
+      <tr><td><code>k.quote(body, expandable=)</code></td><td>Цитату, обычную или раскрывающуюся</td></tr>
+      <tr><td><code>k.image(url)</code></td><td>Картинку</td></tr>
+      <tr><td><code>k.icon("settings")</code></td><td>Иконку: с премиумом кастомный эмодзи, без него обычный</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Нижняя клавиатура и ввод</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Метод</th><th>Что делает</th></tr></thead>
+    <tbody>
+      <tr><td><code>k.button(label, cb, *args)</code></td><td>Обычная кнопка внизу</td></tr>
+      <tr><td><code>k.input(label, handler, prompt)</code></td><td>Кнопку, запрашивающую значение: <code>handler(call, value)</code></td></tr>
+      <tr><td><code>k.copy_button(label, value)</code></td><td>Кнопку копирования внизу</td></tr>
+      <tr><td><code>k.back(cb)</code>, <code>k.close()</code></td><td>«Назад» и «Закрыть»</td></tr>
+      <tr><td><code>k.footer(back_cb)</code></td><td>Готовый ряд «Назад + Закрыть»</td></tr>
+      <tr><td><code>k.pager(cb, page, pages)</code></td><td>«‹ 1 / N ›»; <code>cb(call, page=...)</code>. Страницы режет <code>k.page(items, page, size)</code></td></tr>
+      <tr><td><code>k.reply(handler)</code></td><td>Разрешает ответить текстом на сообщение-экран: <code>handler(call, text)</code>. Ответное сообщение удаляется</td></tr>
+    </tbody>
+  </table></div>
+  <p>Экран редактируется как обычная форма: <code>await call.edit(rich_html=another_screen)</code>. Хелпер <code>await self.inline.show(call, screen)</code> делает то же и заодно показывает тост: присвойте <code>screen.toast = "Сохранено"</code> перед показом, а <code>screen.alert = True</code> сделает его всплывающим окном. Для предупреждения в теле есть <code>k.warn(text)</code>.</p>
+
+  <h2 id="rich-fallback">Запасной вывод</h2>
+  <p>Старый клиент, чат без поддержки или ошибка отправки не ломают сообщение. При сбое rich-формы ataraxia перегоняет экран в обычный Telegram HTML: таблицы становятся строками «ключ: значение», кнопки-тапы переезжают в нижнюю клавиатуру, раскрывающиеся блоки разворачиваются. То же самое происходит в <code>utils.answer</code>: markdown уходит как есть, а при ошибке повторяется обычным текстом.</p>
+  <p>Один нюанс: rich HTML нельзя совместить с медиа в одной форме, параметры <code>photo</code>, <code>gif</code>, <code>file</code>, <code>video</code> и прочие с <code>rich_html</code> не сочетаются. Картинку в rich-сообщении добавляет <code>&lt;img&gt;</code> в самом HTML.</p>
+
+  <div class="pgr"><a href="#r">← .e и объект r</a><a href="#module">Свой модуль →</a></div>
 </section>
 
 <section id="module">
@@ -1002,8 +1116,8 @@ __version__ = (1, 0, 0)</code></pre>
   <p>Рабочие примеры находятся в папке <code>ataraxia/modules/</code>. Начни с <code>translations.py</code> и <code>test.py</code>: там хорошо видно, как команда получает сообщение и как отвечает.</p>
 
   <h2>Если одной страницы мало</h2>
-  <p><code>loader.Module</code> даёт доступ к Telegram-клиенту, базе и инлайн-менеджеру. Для перевода строк интерфейса модуль может задать <code>strings_ru</code> и другие суффиксы. Внешние общие библиотеки подключаются через <code>self.import_lib(url)</code>, библиотечный класс наследует <code>loader.Library</code> и оканчивается на <code>Lib</code>. Удобные методы вроде <code>utils.escape_html</code> и <code>utils.get_chat_id</code> лежат в <code>ataraxia/utils/</code>. Подписи аргументов и примеры вызывающих модулей смотри в исходниках.</p>
-  <div class="pgr"><a href="#r">← .e и объект r</a><a href="#faq">Проблемы →</a></div>
+  <p><code>loader.Module</code> даёт доступ к Telegram-клиенту, базе и инлайн-менеджеру. Для перевода строк интерфейса модуль может задать <code>strings_ru</code> и другие суффиксы: нужный вариант выбирается по текущему языку, а фолбэк общий <code>strings</code>. Внешние общие библиотеки подключаются через <code>self.import_lib(url)</code>, библиотечный класс наследует <code>loader.Library</code> и оканчивается на <code>Lib</code>. Удобные методы вроде <code>utils.escape_html</code> и <code>utils.get_chat_id</code> лежат в <code>ataraxia/utils/</code>. Подписи аргументов и примеры вызывающих модулей смотри в исходниках.</p>
+  <div class="pgr"><a href="#rich">← Rich messages</a><a href="#faq">Проблемы →</a></div>
 </section>
 
 <section id="faq">
