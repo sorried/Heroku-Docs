@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Heroku Userbot. Handbook</title>
-<meta name="description" content="Heroku Userbot handbook: installation, commands, Python evaluation, the reply object, modules, beta and dev branches.">
-<link rel="icon" type="image/webp" href="https://github.com/hikariatama/assets/raw/master/1326-command-window-line-flat.webp">
+<title>ataraxia. Handbook</title>
+<meta name="description" content="ataraxia userbot handbook: uv installation, web login, commands, Python evaluation, the reply object, modules, MTProto inline bot and guest commands.">
+<link rel="icon" type="image/png" href="https://git.break.wtf/xenside/ataraxia/-/raw/main/assets/bot_pfp.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -191,10 +191,10 @@ footer a{color:var(--mut);text-decoration:underline}
 
 <header>
   <button class="ico" id="hb" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></button>
-  <div class="logo-plate"><img src="https://github.com/hikariatama/assets/raw/master/1326-command-window-line-flat.webp" alt="Heroku"></div>
-  <div class="tt">Heroku Handbook<small>Telegram userbot</small></div>
+  <div class="logo-plate"><img src="https://git.break.wtf/xenside/ataraxia/-/raw/main/assets/bot_pfp.png" alt="ataraxia"></div>
+  <div class="tt">ataraxia Handbook<small>dev-oriented Telegram userbot</small></div>
   <span class="grow"></span>
-  <span class="branch-note">master <b>2.1.0</b> · dev <b>2.2.2</b></span>
+  <span class="branch-note">codename <b>Rise</b> · Python <b>3.10+</b> · AGPLv3</span>
   <div class="langs" aria-label="Language"><a href="index.html" lang="ru" aria-label="Русская версия">RU</a><a class="active" href="en.html" lang="en" aria-current="page" aria-label="English version">EN</a></div>
   <button class="ico" id="th" aria-label="Toggle theme"><svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-15.5a.9.9 0 0 1 .9.9v1.8a.9.9 0 1 1-1.8 0V3.4a.9.9 0 0 1 .9-.9zm0 15.4a.9.9 0 0 1 .9.9v1.8a.9.9 0 1 1-1.8 0v-1.8a.9.9 0 0 1 .9-.9zM3.5 11.1h1.8a.9.9 0 1 1 0 1.8H3.5a.9.9 0 1 1 0-1.8zm15.2 0h1.8a.9.9 0 1 1 0 1.8h-1.8a.9.9 0 1 1 0-1.8zM5.6 4.7l1.3 1.3a.9.9 0 1 1-1.3 1.3L4.3 6a.9.9 0 0 1 1.3-1.3zm12.5 12.5l1.3 1.3a.9.9 0 1 1-1.3 1.3l-1.3-1.3a.9.9 0 0 1 1.3-1.3zM5.6 19.3A.9.9 0 0 1 4.3 18l1.3-1.3a.9.9 0 0 1 1.3 1.3zM18.1 6.8a.9.9 0 0 1-1.3-1.3l1.3-1.3a.9.9 0 0 1 1.3 1.3z"/></svg></button>
 </header>
@@ -203,9 +203,9 @@ footer a{color:var(--mut);text-decoration:underline}
 <div class="wrap">
 <nav id="nav">
   <div class="grp">Getting started</div>
-  <a href="#about">About Heroku</a>
+  <a href="#about">About ataraxia</a>
   <a href="#install">Installation</a>
-  <a href="#login">First login</a>
+  <a href="#login">Login and web UI</a>
   <a href="#storage">Files and migration</a>
   <a href="#basics">The basics</a>
   <a href="#daily">Everyday tasks</a>
@@ -218,9 +218,9 @@ footer a{color:var(--mut);text-decoration:underline}
     <a class="sub" href="#cmd-code">Code and terminal</a>
     <a class="sub" href="#cmd-backups">Backups</a>
     <a class="sub" href="#cmd-security">Security</a>
-    <a class="sub" href="#cmd-presets">Master presets</a>
+    <a class="sub" href="#cmd-inline">Inline bot and web</a>
   </details>
-  <a href="#inline">Inline bot and access</a>
+  <a href="#perms">Security and permissions</a>
   <a href="#r">.e and the reply object</a>
   <details><summary>Reply reference</summary>
     <a class="sub" href="#r-fields">Text, sender, chat</a>
@@ -229,104 +229,130 @@ footer a{color:var(--mut);text-decoration:underline}
     <a class="sub" href="#r-examples">Examples</a>
   </details>
   <a href="#module">Writing a module</a>
-  <div class="grp">Branches</div>
-  <a href="#beta">Beta</a>
-  <a href="#devb">Dev branch</a>
+  <details><summary>Module topics</summary>
+    <a class="sub" href="#mod-inline">Inline and the bot</a>
+    <a class="sub" href="#mod-guest">Guest commands</a>
+    <a class="sub" href="#mod-meta">File metadata</a>
+  </details>
   <div class="grp">Help</div>
   <a href="#faq">Troubleshooting</a>
 </nav>
 <main><div class="page" id="pages">
 <section id="about">
-  <div class="hero"><div class="plate"><img src="https://github.com/hikariatama/assets/raw/master/1326-command-window-line-flat.webp" alt="Heroku" width="66" height="66"></div><div><h1>Heroku Handbook</h1><p class="lead">Installation, first login, built-in commands and Python with <code>.e</code>. Beta and dev have their own chapters.</p></div></div>
+  <div class="hero"><div class="plate"><img src="https://git.break.wtf/xenside/ataraxia/-/raw/main/assets/bot_pfp.png" alt="ataraxia" width="66" height="66"></div><div><h1>ataraxia Handbook</h1><p class="lead">Install with uv, log in through the web UI, run built-in commands and Python with <code>.e</code>. The inline bot runs over MTProto, and modules hot-load from any URL.</p></div></div>
 
   <h2>What is a userbot?</h2>
   <p>A regular Telegram bot has its own account. A userbot signs in as you and handles commands you send from your account. For example, <code>.ping</code> shows response time. You can send commands in Saved Messages, a private chat or a group, subject to the permissions you have there.</p>
-  <p>Heroku is a fork of Hikka. It uses herokutl, a Telethon fork. It redirects imports of <code>telethon</code> and <code>hikka</code> inside external modules to its own packages, which helps with compatibility. It does not guarantee that every older module works unchanged.</p>
+  <p>ataraxia is a modular userbot aimed at developers who want full control over their Telegram client. It runs on ataraxia-tl, a Telethon fork with a current protocol layer. The version is the codename <code>Rise</code>; branch and commit are resolved from git at startup. Licensed AGPLv3.</p>
 
   <h2>What it can do</h2>
-  <ul><li>Run built-in commands for translation, diagnostics, backups and Python evaluation</li><li>Install modules with more commands from a repository or a Python file</li><li>Display menus and confirmation buttons through a personal inline bot</li><li>Manage permissions for commands, chats and other users</li><li>Switch the interface language, including Russian and English</li></ul>
+  <ul><li>Built-in commands for diagnostics, help, translation, backups and Python evaluation</li><li>Built-in modules plus hot-loadable external ones from any URL via <code>.dlm</code></li><li>An MTProto inline bot for forms and paginated lists, with a Bot API shaped facade <code>self.inline.bot</code></li><li>Guest commands: <code>@botusername cmd</code> from chats the bot is not in</li><li>Rich messages from your account: headings, blockquotes and tables, with a plain fallback</li><li>Bitmask permissions: OWNER, group admins, PM, EVERYONE, targeted rules</li><li>Encrypted binary sessions, useless without <code>ataraxia.key</code></li><li>Web setup: browser-based auth with QR support, SSH tunnel for remote servers</li><li>i18n via YAML packs with fallback chains; English and Russian ship built in</li><li>Zero pip: uv manages every dependency, <code>pyproject.toml</code> is the single source of truth</li></ul>
 
   <h2>Where data lives</h2>
-  <p>A local installation keeps API credentials in <code>config.json</code>, the Telegram session in <code>sessions/</code>, account settings in <code>config-&lt;id&gt;.json</code>, and external modules in <code>loaded_modules/</code>. Docker stores data under <code>/data</code>. Keep those files private, especially the session.</p>
+  <p>A local installation keeps API credentials in <code>config.json</code>, the session master key in <code>ataraxia.key</code>, the encrypted session in <code>ataraxia-&lt;id&gt;.atsession</code>, a JSON database per account and external modules in <code>loaded_modules/</code>. Docker stores data under <code>/data</code>; the path can be changed with <code>--data-root</code>. Keep those files private.</p>
 
-  <blockquote class="red"><span class="bt">One rule</span><p>Do not send anyone your session files or commit them to a public repository. A session file can let someone connect to your account without requesting a new login code.</p></blockquote>
+  <h2>Honest downsides</h2>
+  <ul><li>The bot answers only while its host is running. It needs a machine that stays on</li><li>External modules are not sandboxed: same process, access to the session and the key. Install code you trust</li><li>Telegram formally discourages account automation. Use your head, do not spam</li><li>ataraxia-tl follows git HEAD and is not version-pinned: an update can bump the library together with the core</li></ul>
+
+  <blockquote class="red"><span class="bt">One rule</span><p>Sessions are encrypted with AES-256-GCM, but <code>ataraxia.key</code> sits right next to them. Whoever gets both files gets the account. Do not share them, never commit them, and never back the key up together with the sessions.</p></blockquote>
   <div class="pgr"><span></span><a href="#install">Installation →</a></div>
 </section>
+
 <section id="install">
   <h1>Installation</h1>
-  <p class="lead">You need Python 3.10 or newer, git and a machine that can keep Heroku running.</p>
+  <p class="lead">Clone, then run <code>uv run -m ataraxia</code>. uv resolves dependencies from <code>pyproject.toml</code> and launches the bot.</p>
+
+  <h2>Requirements</h2>
+  <ul><li>Python 3.10 or newer</li><li><a href="https://docs.astral.sh/uv/">uv</a>, the project's only package manager: no pip, no manual venv</li><li>git: the updater runs <code>git pull</code>, so clone the repository instead of downloading an archive</li></ul>
 
   <h2>Where to run it</h2>
-  <p>A VPS is the straightforward choice for round-the-clock use. A home computer works while it is powered on. Termux on Android is possible, but Android may stop the process to save battery. Windows users can use WSL; the project's README calls that route less stable.</p>
+  <p>A VPS is the straightforward choice for round-the-clock use. A home computer works while it is powered on. Docker users get a prepared image with node, ffmpeg and compilers inside.</p>
+  <div class="tw"><table><thead><tr><th>Host</th><th>Best for</th><th>Note</th></tr></thead><tbody>
+    <tr><td>Linux VPS</td><td>24/7 uptime</td><td>From a couple of dollars, needs ssh</td></tr>
+    <tr><td>Home PC</td><td>Trying things out</td><td>Works while powered on</td></tr>
+    <tr><td>Raspberry Pi</td><td>Quiet always-on host</td><td>Needs a separate device</td></tr>
+    <tr><td>Docker</td><td>Container setups</td><td>Data in the <code>/data</code> volume, port 8080</td></tr>
+  </tbody></table></div>
 
-  <h2>Ubuntu and Debian</h2>
+  <h2>Linux and macOS</h2>
   <div class="codetop"><span>terminal</span></div>
-  <pre><code>sudo apt update &amp;&amp; sudo apt install git python3 python3-venv -y
-git clone https://github.com/coddrago/Heroku
-cd Heroku
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 -m heroku</code></pre>
-  <p>The virtual environment keeps Heroku's Python dependencies separate from the rest of your system. Fedora uses <code>sudo dnf install git python3 -y</code> for the first line; Arch uses <code>sudo pacman -S git python --needed</code>. The remaining steps are the same.</p>
-
-  <h2>Installer script</h2>
-  <p>The repository also includes <code>install.sh</code>. It detects apt, pacman, dnf, Homebrew or Termux, installs dependencies, creates a virtual environment and starts Heroku.</p>
-  <div class="codetop"><span>terminal</span></div>
-  <pre><code>git clone https://github.com/coddrago/Heroku
-cd Heroku
-bash install.sh</code></pre>
-  <p>On failure it prints <code>heroku-install.log</code> to the terminal. It removes that log after a successful installation.</p>
+  <pre><code>git clone https://git.break.wtf/xenside/ataraxia
+cd ataraxia
+uv run -m ataraxia</code></pre>
+  <p>On the first run uv downloads ataraxia-tl and the remaining dependencies, which takes a couple of minutes.</p>
 
   <h2>Docker</h2>
   <div class="codetop"><span>terminal</span></div>
-  <pre><code>git clone https://github.com/coddrago/Heroku
-cd Heroku
-bash docker.sh</code></pre>
-  <p>The script builds an image and starts an interactive setup. After login, use <code>docker-compose up -d</code>. The named <code>worker</code> volume persists data under <code>/data</code>. To build a dev image, use <code>docker-compose build --build-arg HEROKU_REF=dev</code>, then restart the container.</p>
+  <pre><code>docker build -t ataraxia .
+docker run -d -p 8080:8080 -v ataraxia-data:/data --name ataraxia ataraxia</code></pre>
+  <p>The image is based on python 3.14-slim with uv, node for <code>.enode</code>, git, ffmpeg, gcc and g++ already inside. Data persists in the <code>/data</code> volume; the web UI listens on port 8080.</p>
+
+  <h2>CLI flags</h2>
+  <div class="tw"><table><thead><tr><th>Flag</th><th>What it does</th></tr></thead><tbody>
+    <tr><td><code>--port</code></td><td>Web UI port. Random free port by default, always 8080 in Docker</td></tr>
+    <tr><td><code>--no-web</code></td><td>Disable the web UI, log in from the terminal</td></tr>
+    <tr><td><code>--data-root</code></td><td>Root path for session and data files</td></tr>
+    <tr><td><code>--phone, -p</code></td><td>Phone number to log in; can be passed multiple times</td></tr>
+    <tr><td><code>--no-auth</code></td><td>Skip authentication and API token input, exit if needed</td></tr>
+    <tr><td><code>--proxy-host</code>, <code>--proxy-port</code>, <code>--proxy-secret</code></td><td>MTProto proxy</td></tr>
+    <tr><td><code>--proxy-pass</code></td><td>Open the SSH tunnel on start</td></tr>
+    <tr><td><code>--sandbox</code></td><td>Die instead of restarting</td></tr>
+    <tr><td><code>--no-tty</code></td><td>No colorful ANSI output</td></tr>
+  </tbody></table></div>
 
   <h2>Keeping it running</h2>
-  <p>For a normal installation, start from the Heroku directory with <code>source .venv/bin/activate</code> followed by <code>python3 -m heroku</code>. Closing that terminal stops the process. On a VPS you can keep it alive in <code>screen</code> or <code>tmux</code>; Docker users can run the container detached.</p>
-  <p>Heroku warns when run as root. Use a separate system user if possible. Pass <code>--root</code> only when you knowingly want modules to run with root privileges.</p>
-  <div class="pgr"><a href="#about">← About Heroku</a><a href="#login">First login →</a></div>
+  <p>One line from the project directory: <code>uv run -m ataraxia</code>. Closing that terminal stops the process. On a VPS keep it alive in <code>screen</code> or <code>tmux</code>: start it inside a session, detach with <code>Ctrl+A</code> <code>D</code>, return with <code>screen -r ataraxia</code>.</p>
+  <p>Restarting from inside Telegram (<code>.restart</code>, <code>.update</code>) works via <code>os.execvp("uv", ...)</code>: the process replaces itself, no external wrapper needed. Docker and Windows go through atexit.</p>
+  <div class="pgr"><a href="#about">← About ataraxia</a><a href="#login">Login →</a></div>
 </section>
 
 <section id="login">
-  <h1>First login</h1>
-  <p class="lead">Have your API ID and API hash ready before you start.</p>
+  <h1>Login and web UI</h1>
+  <p class="lead">On first start ataraxia opens a web interface: QR or phone login, API credentials and 2FA, all in the browser.</p>
 
-  <h2>Get your API credentials</h2>
-  <ol><li>Sign in at <a href="https://my.telegram.org">my.telegram.org</a>. Telegram sends the code to the app</li><li>Open <b>API development tools</b> and create an application</li><li>Copy <b>App api_id</b> (a number) and <b>App api_hash</b> (32 hexadecimal characters)</li></ol>
-  <p>Enter them when Heroku asks. It saves them to <code>config.json</code>. Do not publish the API hash.</p>
+  <h2>API ID and API hash</h2>
+  <ol><li>Sign in at <a href="https://my.telegram.org">my.telegram.org</a>. Telegram sends the code to the app</li><li>Open <b>API development tools</b> and create an application</li><li>Copy <b>App api_id</b> (a number) and <b>App api_hash</b> (32 characters)</li></ol>
+  <p>The web UI also offers ready-made presets for Telegram Desktop and Telegram for Android that fill in their own api_id and api_hash, and generate a plausible device profile. You can provide your own values via the <code>api_id</code> and <code>api_hash</code> environment variables or an <code>api_token.py</code> file; <code>config.json</code> wins once the values are saved there.</p>
+  <blockquote class="red"><span class="bt">Secret</span><p>Do not publish the API hash or paste it into screenshots.</p></blockquote>
 
-  <h2>Sign in with QR or phone</h2>
-  <p>The prompt <code>Use QR code? [y/N]</code> offers two routes. For QR login, scan the code displayed in the terminal from Telegram's device settings. For phone login, enter your number in international format and then the code Telegram sends to your app. If two-step verification is enabled, enter its cloud password when asked. Password characters are not displayed while typing.</p>
-  <p>The session is saved as <code>sessions/heroku-&lt;your_id&gt;.session</code>, so subsequent launches normally do not ask for a code.</p>
+  <h2>QR or phone login</h2>
+  <p>The web UI draws a QR code that refreshes as it expires; scan it from Telegram's device settings. Phone login takes the number in international format and then the code Telegram sends to your app. If two-step verification is enabled, the cloud password is requested in both the web UI and the terminal. The session is saved encrypted as <code>ataraxia-&lt;your_id&gt;.atsession</code>.</p>
 
-  <h2>Your inline bot</h2>
-  <p>Heroku uses a personal bot created through @BotFather for inline forms, galleries and confirmation buttons. When asked for a username, you can leave it blank to use an automatically generated one. A custom name must end in <code>bot</code>. The prompt can appear at a different point depending on the login route; with QR login Heroku may simply choose a name for you. You can later change it with <code>.ch_heroku_bot</code> or set a token with <code>.ch_bot_token</code>.</p>
+  <h2>The web UI</h2>
+  <p>Built with aiohttp and jinja2, templates in <code>web-resources/</code>. It handles API credential entry, code sending, QR login, 2FA and account management. <code>--no-web</code> disables it; login then happens in the terminal.</p>
+  <p>If the bot lives on a headless VPS, the <code>.weburl</code> command opens an SSH tunnel through serveo.net or localhost.run and returns a public https link to the UI. In groups the command asks for confirmation first, since the link exposes the UI to the chat. The tunnel can also be opened at startup with <code>--proxy-pass</code>.</p>
+
+  <h2>Multiple accounts</h2>
+  <p>ataraxia is multi-client: several sessions run in one process, each with its own database, modules and logs. Add an account from the web UI or with <code>.addacc</code> in Telegram: an inline form collects the number and the code, then the bot restarts with the new session. Logging in for someone else requires confirmation or a <code>force_insecure</code> suffix.</p>
 
   <h2>After login</h2>
-  <p>Heroku creates a private <code>heroku-userbot</code> channel for backups and service files. Its inline bot may send a welcome message with language choices and ask how often to make backups. To check that commands work, send <code>.ping</code> to Saved Messages.</p>
+  <ul><li>A private channel with a forum is created: Assets and Backups topics hold media and backups. Do not delete it</li><li>The inline bot sends a welcome message with language buttons and a backup-period question</li><li>The inline bot is pinned into the ataraxia chat folder, if you have one</li></ul>
+  <blockquote class="green"><span class="bt">Check</span><p>Send <code>.ping</code> to Saved Messages. If the message turns into a card with latency and uptime, everything works.</p></blockquote>
   <div class="pgr"><a href="#install">← Installation</a><a href="#storage">Files and migration →</a></div>
 </section>
 
 <section id="storage">
   <h1>Files, backups and migration</h1>
-  <p class="lead">You can reinstall Python dependencies. Your session and account database are the files you need to protect and keep.</p>
+  <p class="lead">You can recreate Python dependencies with uv. The session, its key and the databases are what you protect and carry over.</p>
   <div class="tw"><table><thead><tr><th>Path</th><th>What it holds</th><th>Migrate?</th></tr></thead><tbody>
-    <tr><td><code>config.json</code></td><td>API credentials and device name</td><td>Yes, privately</td></tr>
-    <tr><td><code>sessions/</code></td><td>Telegram authorization</td><td>Yes, if you want to avoid a new login</td></tr>
-    <tr><td><code>config-&lt;id&gt;.json</code></td><td>Settings and data for that account</td><td>Yes</td></tr>
-    <tr><td><code>loaded_modules/</code></td><td>External module files</td><td>Yes, especially modules installed from files</td></tr>
-    <tr><td><code>.venv/</code></td><td>Python packages</td><td>No, recreate it on the new machine</td></tr>
+    <tr><td><code>config.json</code></td><td>API credentials and the web UI port</td><td>Yes, privately</td></tr>
+    <tr><td><code>ataraxia.key</code></td><td>Session master key, 32 bytes hex, mode 0600</td><td>Yes, apart from sessions</td></tr>
+    <tr><td><code>ataraxia-&lt;id&gt;.atsession</code></td><td>Encrypted binary session, AES-256-GCM</td><td>Yes, with the key</td></tr>
+    <tr><td><code>db-*.json</code></td><td>Per-account settings and module data</td><td>Yes</td></tr>
+    <tr><td><code>loaded_modules/</code></td><td>External modules and the <code>.dlm</code> cache</td><td>Yes, especially file-installed modules</td></tr>
+    <tr><td><code>ataraxia-...-bot.atsession</code></td><td>The inline bot's session, same key</td><td>Yes</td></tr>
+    <tr><td><code>.venv/</code>, uv cache</td><td>Installed Python dependencies</td><td>No, uv recreates them</td></tr>
   </tbody></table></div>
+  <p>The database writes atomically: temp file, fsync, then <code>os.replace</code>. Serialization is orjson; there is no stdlib json and no Redis.</p>
+
   <h2>Moving to another server</h2>
-  <ol><li>Stop Heroku on the old server so the same session is not active in two places</li><li>Transfer the project and the files above over a protected connection</li><li>Create a new virtual environment and install <code>requirements.txt</code> on the new server</li><li>Start Heroku and check <code>.ping</code></li></ol>
-  <p><code>.backupall</code> saves the database and external modules, but not a replacement Telegram session or your API credentials. If you migrate using only its archive, you will need to log in again.</p>
+  <ol><li>Stop ataraxia on the old server so the same session is not active in two places</li><li>Transfer the project together with <code>config.json</code>, <code>ataraxia.key</code>, the <code>.atsession</code> files, databases and <code>loaded_modules/</code> over a protected connection</li><li>Install uv on the new server and run <code>uv run -m ataraxia</code>; dependencies resolve themselves</li><li>Send <code>.ping</code> to Saved Messages and check <code>.ataraxia</code>: branch and commit should match the old server</li></ol>
+  <p><code>.backupall</code> saves the database, modules and pip requirements to the service forum. That archive does not replace the session or the key: migrating with only the backup means logging in again.</p>
+
   <h2>Finding backups</h2>
-  <p>The private service channel has a Backups topic. <code>.backupdb</code>, <code>.backupmods</code> and <code>.backupall</code> normally send files there and return a link. Check each command's response if the topic is unavailable.</p>
-  <div class="pgr"><a href="#login">← First login</a><a href="#basics">The basics →</a></div>
+  <p>The private service forum has a Backups topic. <code>.backupdb</code>, <code>.backupmods</code> and <code>.backupall</code> send files there and return a link. <code>.set_backup_period</code> sets the automatic interval in hours; <code>0</code> disables it.</p>
+  <blockquote class="red"><span class="bt">Do not share sessions</span><p>A session archive and the account database contain private data. Support usually needs an error log, not your <code>.atsession</code> or <code>config.json</code>.</p></blockquote>
+  <div class="pgr"><a href="#login">← Login</a><a href="#basics">The basics →</a></div>
 </section>
 
 <section id="basics">
@@ -335,177 +361,205 @@ bash docker.sh</code></pre>
   <div class="codetop"><span>in any chat</span></div>
   <pre><code>.help
 .ping
-.tr es Hello</code></pre>
+.setlang ru</code></pre>
   <p>After the prefix comes the command name, then its arguments. In command help, <code>&lt;angle brackets&gt;</code> mean required input and <code>[square brackets]</code> mean optional input. Use the spelling shown by <code>.help</code>.</p>
+
+  <h2>Escaping and layouts</h2>
+  <p>A doubled prefix escapes the command: <code>..hello</code> is sent as the plain text ".hello". The dispatcher also translates keyboard layouts: a command typed in the wrong layout is recognized anyway, so layout slips do not break commands.</p>
+
   <h2>Replies</h2>
-  <p>Some commands take a message to work on from your reply. Reply to a message with <code>.tr en</code> to translate its text. With <code>.e</code>, the replied-to message is available through <code>r</code>.</p>
+  <p>Some commands take a message to work on from your reply. With <code>.e</code>, the replied-to message is available through <code>r</code>.</p>
+
   <h2>Change the prefix</h2>
   <div class="codetop"><span>in Telegram</span></div>
   <pre><code>.setprefix !</code></pre>
-  <p>Commands now use <code>!</code>. Ask your inline bot for <code>/profile</code> if you forget the prefix; it displays the current value and a reset button. Longer prefixes require the <code>allow_nonstandart_prefixes</code> setting.</p>
-  <h2>Aliases and disabling commands</h2>
-  <p><code>.addalias p ping</code> adds a short command <code>.p</code>. Check saved aliases with <code>.aliases</code> and remove one with <code>.delalias p</code>. To temporarily disable a command use <code>.togglecmd name</code>; <code>.togglemod ModuleName</code> toggles a whole module. Run the same toggle again to restore it.</p>
-  <blockquote class="red"><span class="bt">Take care with code</span><p><code>.e</code> runs Python and <code>.terminal</code> runs shell commands on the machine hosting Heroku. Neither is a sandbox for snippets someone sent you.</p></blockquote>
+  <p>A single-character prefix works immediately; longer ones, emoji or premium emoji require the <code>allow_nonstandart_prefixes</code> setting. The prefix <code>s</code> is rejected. Personal prefixes exist too: <code>.setprefix ! 123456789</code> assigns a prefix to a user who already has permissions (a co-owner, a security-group member or a targeted-rule target).</p>
+
+  <h2>Aliases and disabling</h2>
+  <p><code>.addalias p ping</code> adds a short command <code>.p</code>. Check saved aliases with <code>.aliases</code> and remove one with <code>.delalias p</code>. <code>.togglecmd name</code> disables one command; <code>.togglemod ModuleName</code> toggles a whole module. Run the same toggle again to restore.</p>
+
+  <h2>Toggles and grep</h2>
+  <p><code>.settings</code> opens the general toggles: NoNick (commands without mentioning your username in groups), Grep and more. With Grep enabled, command output can be filtered with <code>| grep word</code>.</p>
+
+  <blockquote class="red"><span class="bt">Take care with code</span><p><code>.e</code> runs Python and <code>.terminal</code> runs shell commands on the host machine. Neither is a sandbox for snippets someone sent you.</p></blockquote>
   <div class="pgr"><a href="#storage">← Files and migration</a><a href="#daily">Everyday tasks →</a></div>
 </section>
 
 <section id="daily">
   <h1>Everyday tasks</h1>
-  <p class="lead">You do not need to memorize the entire command list. These are useful starting points.</p>
-  <h2>Find a command</h2><p>Send <code>.help</code> and choose a module. For example, <code>.help Translator</code> lists its translation commands. Installed external modules appear in the same help menu.</p>
-  <h2>Translate a message</h2><p>Reply to the text and send <code>.tr en</code>. To translate text written in the command itself, try <code>.tr es Hello</code>. Choose Telegram or Google as the provider in Translator's <code>.config</code> settings.</p>
-  <h2>Install a module</h2><p>After the loader's first-time verification, <code>.dlmod</code> lists available names and <code>.dlmod ModuleName</code> installs one from a repository. For a Python file, upload it and reply with <code>.loadmod</code>. <code>.loadmod</code> does not take a URL as a text argument. Check <code>.help</code> afterward.</p>
-  <h2>Read an error</h2><p><code>.logs</code> opens a level picker. Start with Error. For more detail choose Debug; <code>.logs debug -f</code> sends it without the extra private-data confirmation. Review the log before sharing it.</p>
-  <h2>Update or disable something</h2><p>Create a backup with <code>.backupall</code> before <code>.update</code>. On dev, updates display a confirmation when inline is available; the studied master handles confirmation differently. <code>.restart</code> restarts without updating. <code>.togglemod ModuleName</code> temporarily disables a module, while <code>.watcherbl ModuleName</code> disables its watcher in the current chat.</p>
+  <p class="lead">You do not need to memorize the command list. These are useful starting points.</p>
+  <h2>Find a command</h2><p>Send <code>.help</code> and choose a module. Flags narrow the list: <code>.help -c</code> built-in only, <code>.help -l</code> external only, <code>-f</code> shows hidden ones too.</p>
+  <h2>Install a module</h2><p><code>.dlm</code> lists repository catalogs, <code>.dlm name</code> installs by name, and <code>.dlm url</code> installs from any URL: github/gitlab blob links are converted to raw automatically. For a Python file, upload it and reply with <code>.lm</code>. Check <code>.help</code> afterward.</p>
+  <h2>Read an error</h2><p><code>.logs</code> opens a level picker; the level can also be passed by name or number. <code>.logs debug -f</code> sends the debug log without the private-data confirmation. Review any log before sharing it.</p>
+  <h2>Update or disable something</h2><p>Create a backup with <code>.backupall</code> before <code>.update</code>. The updater runs <code>git pull</code> in the current branch, then <code>uv sync -U</code>, showing a card with the current and upcoming commit. <code>-f</code> skips the confirmation. If the dependency sync fails, the code on disk is already new while the running one is old: the bot offers a retry instead of restarting. <code>.restart</code> restarts without updating. <code>.togglemod ModuleName</code> temporarily disables a module, and <code>.watcherbl ModuleName</code> disables its watcher in the current chat.</p>
   <h2>Give limited access</h2><p><code>.tsec user @username ping 1h</code> offers to allow that user to run ping for one hour. Use <code>.security</code> for broader settings. <code>.owneradd</code> grants much more access than is needed for one command.</p>
+  <h2>Open the web UI from your phone</h2><p><code>.weburl</code> opens the SSH tunnel and returns the link. If the bot runs on a VPS and the only browser around is on your phone, that is the shortest path to the login forms and account management.</p>
   <div class="pgr"><a href="#basics">← The basics</a><a href="#cmds">All commands →</a></div>
 </section>
 
 <section id="cmds">
   <h1>Command reference</h1>
-  <p class="lead">Built-in commands in the studied master branch. Third-party modules add their own commands; use <code>.help ModuleName</code> for those. Names in parentheses are aliases.</p>
-  <div class="jumps"><a href="#cmd-core">Core</a><a href="#cmd-loader">Modules</a><a href="#cmd-updates">Updates</a><a href="#cmd-code">Code</a><a href="#cmd-backups">Backups</a><a href="#cmd-security">Access</a><a href="#cmd-presets">Presets</a></div>
+  <p class="lead">Built-in commands of ataraxia. Third-party modules add their own; use <code>.help ModuleName</code> for those. Names in parentheses are aliases.</p>
+  <div class="jumps"><a href="#cmd-core">Core</a><a href="#cmd-loader">Modules</a><a href="#cmd-updates">Updates</a><a href="#cmd-code">Code</a><a href="#cmd-backups">Backups</a><a href="#cmd-security">Access</a><a href="#cmd-inline">Inline and web</a></div>
 
   <h2 id="cmd-core">Core commands and settings</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.heroku</code></td><td>Shows the Heroku and herokutl versions and build details</td></tr>
-    <tr><td><code>.setprefix &lt;prefix&gt;</code></td><td>Changes the command prefix; a dot is the default</td></tr>
+    <tr><td><code>.ataraxia</code></td><td>Shows the version, ataraxia-tl layer, branch and commit with a link</td></tr>
+    <tr><td><code>.info</code></td><td>Bot info card: owner, uptime, CPU, RAM, OS. Text is customizable with placeholders</td></tr>
+    <tr><td><code>.ping</code></td><td>Shows response time and uptime</td></tr>
+    <tr><td><code>.setprefix &lt;prefix&gt; [id]</code></td><td>Changes the prefix; with an id or username, assigns a personal prefix</td></tr>
     <tr><td><code>.aliases</code></td><td>Lists your custom aliases</td></tr>
     <tr><td><code>.addalias &lt;alias&gt; &lt;command&gt;</code></td><td>Adds an alias, for example <code>.addalias p ping</code></td></tr>
-    <tr><td><code>.delalias &lt;alias&gt;</code></td><td>Removes an alias; <code>-c</code> or <code>--clear</code> clears all aliases</td></tr>
-    <tr><td><code>.blacklist [chat] [module]</code></td><td>Stops a module or all modules from working in a chat</td></tr>
-    <tr><td><code>.unblacklist &lt;chat_id&gt;</code></td><td>Removes a chat block</td></tr>
-    <tr><td><code>.blacklistuser [user]</code>, <code>.unblacklistuser [user]</code></td><td>Blocks or restores the commands a user would otherwise be allowed to run</td></tr>
+    <tr><td><code>.delalias &lt;alias&gt;</code></td><td>Removes an alias</td></tr>
+    <tr><td><code>.settings</code></td><td>Opens the general toggles menu</td></tr>
     <tr><td><code>.togglecmd &lt;command&gt;</code></td><td>Disables or enables one command</td></tr>
     <tr><td><code>.togglemod &lt;module&gt;</code></td><td>Disables or enables a whole module</td></tr>
     <tr><td><code>.clearmodule &lt;module&gt;</code></td><td>Deletes that module's saved database data</td></tr>
     <tr><td><code>.cleardb</code></td><td>Clears the entire database after confirmation</td></tr>
-    <tr><td><code>.installation</code></td><td>Shows an installation guide in Telegram</td></tr>
+    <tr><td><code>.setlang &lt;lang&gt;</code></td><td>Sets the interface language; en and ru ship built in</td></tr>
+    <tr><td><code>.dllangpack &lt;url&gt;</code></td><td>Adds an external YAML language pack</td></tr>
   </tbody></table></div>
 
   <h2>Help</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.help [module]</code></td><td>Lists modules or shows one module's commands</td></tr>
+    <tr><td><code>.help [module]</code></td><td>Lists modules or shows one module's commands. Flags: <code>-c</code> built-in, <code>-l</code> external, <code>-f</code> show hidden</td></tr>
     <tr><td><code>.helphide &lt;module&gt;</code></td><td>Hides or shows a module in the overall list</td></tr>
     <tr><td><code>.support</code></td><td>Sends support links</td></tr>
   </tbody></table></div>
 
   <h2 id="cmd-loader">Module loader</h2>
-  <p>The first <code>.dlmod</code> or <code>.loadmod</code> requires a short verification through the inline bot. Until you pass it, the loader refuses to install modules.</p>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.dlmod</code> (<code>.dlm</code>)</td><td>Lists names from repositories; with a name, searches and installs that module</td></tr>
-    <tr><td><code>.dlmall</code></td><td>Offers to install all modules from a chosen repository</td></tr>
-    <tr><td><code>.loadmod</code> (<code>.lm</code>)</td><td>Loads a Python file attached to the command or to the message you replied to; a URL text argument is not supported</td></tr>
-    <tr><td><code>.unloadmod &lt;class&gt;</code> (<code>.ulm</code>)</td><td>Unloads a module by class name</td></tr>
+    <tr><td><code>.dlm</code> (<code>.dlmod</code>)</td><td>Lists repository catalogs; with a name or URL installs that module. Several names can be passed separated by spaces</td></tr>
+    <tr><td><code>.lm</code> (<code>.loadmod</code>)</td><td>Loads a Python file attached to the command or to the message you replied to</td></tr>
+    <tr><td><code>.ulm &lt;class&gt;</code> (<code>.unloadmod</code>)</td><td>Unloads a module by class name; several can be listed separated by commas or newlines</td></tr>
     <tr><td><code>.clearmodules</code></td><td>Removes installed external modules after confirmation</td></tr>
-    <tr><td><code>.addrepo &lt;url&gt;</code>, <code>.delrepo &lt;url&gt;</code></td><td>Adds a repository with a non-empty <code>full.txt</code>, or removes it</td></tr>
+    <tr><td><code>.addrepo &lt;url&gt;</code></td><td>Adds a repository with a non-empty <code>full.txt</code></td></tr>
+    <tr><td><code>.delrepo &lt;url&gt;</code></td><td>Removes a repository from the list</td></tr>
     <tr><td><code>.ml &lt;module&gt;</code></td><td>Sends that module's source file</td></tr>
   </tbody></table></div>
+  <p>Downloaded code is cached in <code>loaded_modules/.dlm_cache/&lt;id&gt;/</code> as a snapshot keyed by URL hash: the next install from the same address uses the snapshot, not the network. Repositories support basic auth via the loader's <code>basic_auth</code> setting. Packages from <code># packages:</code> are installed through the system package manager when one is found.</p>
 
-  <h2>Information, watchers and general settings</h2>
+  <h2>Watchers and NoNick</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.info</code>, <code>.ubinfo</code></td><td>Shows your bot's information card or an introduction to Heroku</td></tr>
-    <tr><td><code>.ping</code></td><td>Shows response time, uptime and system information</td></tr>
-    <tr><td><code>.settings</code></td><td>Opens toggles for NoNick, Grep, InlineLogs and update/restart buttons</td></tr>
     <tr><td><code>.watchers</code></td><td>Lists active and disabled message watchers</td></tr>
     <tr><td><code>.watcherbl &lt;module&gt;</code></td><td>Toggles that module's watcher in the current chat</td></tr>
     <tr><td><code>.watcher &lt;module&gt;</code></td><td>Toggles a watcher globally; <code>-c</code>, <code>-p</code>, <code>-o</code>, <code>-i</code> restrict chats, PM, outgoing or incoming messages</td></tr>
     <tr><td><code>.nonickuser</code>, <code>.nonickchat</code>, <code>.nonickcmd &lt;command&gt;</code></td><td>Toggle NoNick for a replied-to user, current group or command</td></tr>
     <tr><td><code>.nonickusers</code>, <code>.nonickchats</code>, <code>.nonickcmds</code></td><td>List the respective NoNick settings</td></tr>
   </tbody></table></div>
-  <p>Grep can filter command output using <code>| grep word</code> when enabled in <code>.settings</code>. InlineLogs controls whether command errors show a traceback in chat.</p>
 
   <h2 id="cmd-updates">Updates</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.update</code></td><td>Updates from the current branch. On dev, an inline confirmation appears when available; the studied master handles confirmation differently</td></tr>
-    <tr><td><code>.update -f</code></td><td>On dev, skips the normal confirmation</td></tr>
-    <tr><td><code>.autoupdate</code></td><td>Toggles automatic updates</td></tr>
-    <tr><td><code>.rollback</code></td><td>Rolls back a recent update</td></tr>
-    <tr><td><code>.restart</code>, <code>.ubstop</code></td><td>Restarts or stops Heroku</td></tr>
-    <tr><td><code>.changelog</code>, <code>.source</code></td><td>Shows recent changes or links to the source</td></tr>
+    <tr><td><code>.update</code></td><td>Updates ataraxia: git pull, then uv sync. Shows a card with the old and new commit</td></tr>
+    <tr><td><code>.update -f</code></td><td>Updates without confirmation</td></tr>
+    <tr><td><code>.restart</code></td><td>Restarts ataraxia; settings persist</td></tr>
+    <tr><td><code>.source</code></td><td>Links to the source code</td></tr>
   </tbody></table></div>
+  <p>Restarting from inside works via <code>os.execvp("uv", ...)</code>: the process replaces itself. Docker and Windows go through atexit.</p>
 
-  <h2 id="cmd-code">Python, other languages and terminal</h2>
-  <div class="tw"><table><thead><tr><th>Command</th><th>What it needs</th></tr></thead><tbody>
-    <tr><td><code>.e</code> (<code>.eval</code>)</td><td>Runs Python with the installed <code>meval</code> package; see the <a href="#r">full guide</a></td></tr>
-    <tr><td><code>.ecpp</code>, <code>.ec</code></td><td>C++ with <code>g++</code>, C with <code>gcc</code></td></tr>
-    <tr><td><code>.ers</code>, <code>.eg</code>, <code>.enode</code></td><td>Require <code>rustc</code>, <code>go</code> or <code>node</code> respectively</td></tr>
-    <tr><td><code>.terminal &lt;shell command&gt;</code> (<code>.exec</code>)</td><td>Runs a shell command on the machine hosting Heroku</td></tr>
-    <tr><td><code>.terminate</code>, <code>.terminate -f</code></td><td>Reply to a running process's output to stop or force-kill it</td></tr>
+  <h2 id="cmd-code">Code execution</h2>
+  <div class="tw"><table><thead><tr><th>Command</th><th>Language</th><th>Requires</th></tr></thead><tbody>
+    <tr><td><code>.e</code> (<code>.eval</code>)</td><td>Python</td><td>Nothing extra</td></tr>
+    <tr><td><code>.ecpp</code></td><td>C++</td><td><code>g++</code></td></tr>
+    <tr><td><code>.ec</code></td><td>C</td><td>same <code>g++</code></td></tr>
+    <tr><td><code>.enode</code></td><td>JavaScript</td><td><code>node</code></td></tr>
   </tbody></table></div>
-  <p>Some dangerous shell commands are blocked, but this is not a complete shell safety checker. <code>exec</code> is also available through the inline bot.</p>
+  <p>You can reply to a message containing code. The execution timeout is 10 seconds. See the <a href="#r">full .e guide</a>.</p>
 
-  <h2>Translation, language and logs</h2>
+  <h2>Terminal</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.tr [language] &lt;text&gt;</code></td><td>Translates entered text or the message you replied to, using the configured Telegram or Google provider</td></tr>
-    <tr><td><code>.setlang en</code></td><td>Sets the interface language. Packs also include ru, ua, de, jp and novelty languages</td></tr>
-    <tr><td><code>.dllangpack &lt;url&gt;</code></td><td>Adds an external language pack</td></tr>
-    <tr><td><code>.logs</code>, <code>.logs debug -f</code></td><td>Opens a log-level picker or sends Debug logs without the privacy confirmation</td></tr>
-    <tr><td><code>.clearlogs</code></td><td>Clears logging-handler buffers, not necessarily the on-disk <code>heroku.log</code> file</td></tr>
-    <tr><td><code>.suspend &lt;seconds&gt;</code></td><td>Pauses the process for the specified time</td></tr>
+    <tr><td><code>.terminal &lt;command&gt;</code> (<code>.exec</code>)</td><td>Runs a shell command on the host. Output streams into the message as it arrives</td></tr>
+    <tr><td><code>.terminate</code></td><td>Sends SIGTERM to the process group; reply to the message with its output</td></tr>
+    <tr><td><code>.terminate -f</code></td><td>Force-kills the process (SIGKILL)</td></tr>
   </tbody></table></div>
+  <p>If a command asks for a sudo password, the bot sends a form to Saved Messages: type the password there and it goes to the process's stdin. Wrong passwords and lockouts are detected and reported. The working directory is ataraxia's base directory.</p>
+
+  <h2>Logs and diagnostics</h2>
+  <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
+    <tr><td><code>.logs [level]</code></td><td>Opens a log-level picker and sends the log as a file; the level can be a name or a number</td></tr>
+    <tr><td><code>.logs debug -f</code></td><td>Sends the debug log without the privacy confirmation</td></tr>
+    <tr><td><code>.clearlogs</code></td><td>Clears logging-handler buffers</td></tr>
+    <tr><td><code>.suspend &lt;seconds&gt;</code></td><td>Pauses the process for the given time</td></tr>
+    <tr><td><code>.api_fw_protection</code></td><td>Toggles the API rate limiter</td></tr>
+    <tr><td><code>.suspend_api_protect &lt;seconds&gt;</code></td><td>Temporarily suspends the limiter</td></tr>
+  </tbody></table></div>
+  <p>The limiter watches call frequency: when a sampling window exceeds the threshold, it waits locally instead of catching a Telegram FloodWait. Individual methods like joinChannel and importChatInvite can be forbidden entirely via <code>forbidden_methods</code>; such requests are silently dropped from the call.</p>
 
   <h2 id="cmd-backups">Backups</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
     <tr><td><code>.backupdb</code>, <code>.restoredb</code></td><td>Saves the database or restores it from a file you replied to</td></tr>
     <tr><td><code>.backupmods</code>, <code>.restoremods</code></td><td>Saves external modules or restores them from an archive</td></tr>
-    <tr><td><code>.backupall</code>, <code>.restoreall</code></td><td>Saves or restores both database and modules</td></tr>
-    <tr><td><code>.set_backup_period &lt;hours&gt;</code></td><td>Sets automatic backup frequency; <code>24</code> means daily, <code>0</code> disables it</td></tr>
+    <tr><td><code>.backupall</code>, <code>.restoreall</code></td><td>Saves or restores database, modules and pip requirements in one archive</td></tr>
+    <tr><td><code>.set_backup_period &lt;hours&gt;</code></td><td>Sets automatic backup frequency; <code>0</code> disables, 199 hours max</td></tr>
   </tbody></table></div>
 
   <h2 id="cmd-security">Access and security</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.security [command]</code>, <code>.inlinesec [command]</code></td><td>Configure access globally or for a regular/inline command</td></tr>
+    <tr><td><code>.security [command]</code></td><td>Configure access globally or for a particular command</td></tr>
+    <tr><td><code>.inlinesec [command]</code></td><td>Configure access for an inline command</td></tr>
     <tr><td><code>.querysec</code></td><td>Toggles external inline-query access</td></tr>
-    <tr><td><code>.owneradd [-f] [-n] &lt;user&gt;</code>, <code>.ownerrm</code>, <code>.ownerlist</code></td><td>Adds, removes or lists co-owners; <code>-f</code> skips confirmation, <code>-n</code> enables NoNick</td></tr>
+    <tr><td><code>.owneradd</code>, <code>.ownerrm</code>, <code>.ownerlist</code></td><td>Add, remove or list co-owners</td></tr>
     <tr><td><code>.newsgroup</code>, <code>.sgroups</code>, <code>.sgroup</code>, <code>.delsgroup</code></td><td>Create, list, inspect or delete security groups</td></tr>
     <tr><td><code>.sgroupadd</code>, <code>.sgroupdel</code></td><td>Add or remove a user in a security group</td></tr>
     <tr><td><code>.tsec</code>, <code>.tsecrm</code>, <code>.tsecclr</code></td><td>List, grant or remove targeted rules for users, chats and security groups</td></tr>
   </tbody></table></div>
-  <p>For example, <code>.tsec user @username ping 1h</code> offers to allow ping for an hour. The rule types cover commands, entire modules and inline handlers.</p>
+  <p>For example, <code>.tsec user @username ping 1h</code> offers to allow ping for an hour. Rules cover commands, whole modules and inline handlers.</p>
 
-  <h2>Inline bot, configuration and accounts</h2>
+  <h2 id="cmd-inline">Inline bot, web and accounts</h2>
   <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.ch_heroku_bot &lt;username&gt;</code>, <code>.ch_bot_token &lt;token&gt;</code></td><td>Changes the inline bot's username or token</td></tr>
-    <tr><td><code>/profile</code>, <code>/start</code> to the inline bot</td><td>Shows your prefix and reset button, or the bot's welcome page</td></tr>
-    <tr><td><code>.config</code></td><td>Opens module and library configuration menus</td></tr>
-    <tr><td><code>.cfg &lt;module&gt; &lt;option&gt; &lt;value&gt;</code></td><td>Sets a value directly. <code>.fcfg</code> is an additional alias on master, absent on dev</td></tr>
-    <tr><td><code>.addacc &lt;user&gt;</code>, <code>.switchacc</code></td><td>Starts adding another Telegram account or switching accounts</td></tr>
-    <tr><td><code>.api_fw_protection</code>, <code>.suspend_api_protect &lt;seconds&gt;</code></td><td>Toggles or temporarily suspends the API rate limiter</td></tr>
+    <tr><td><code>.ch_ataraxia_bot &lt;username&gt;</code></td><td>Changes the inline bot's username; generates a random one when omitted</td></tr>
+    <tr><td><code>.ch_bot_token &lt;token&gt;</code></td><td>Uses an existing bot via its token</td></tr>
+    <tr><td><code>.weburl</code></td><td>Opens the SSH tunnel and links the web UI</td></tr>
+    <tr><td><code>.addacc &lt;user&gt;</code></td><td>Starts adding another Telegram account through an inline form</td></tr>
+    <tr><td><code>.config</code> (<code>.cfg</code>)</td><td>Opens module and library configuration menus</td></tr>
+    <tr><td><code>.fconfig</code> (<code>.fcfg</code>)</td><td>Sets values directly: <code>.fconfig Module option value</code>, changes joined with <code>&amp;&amp;</code>. Without a value it takes the reply's text</td></tr>
   </tbody></table></div>
-
-  <h2 id="cmd-presets">Presets on master only</h2>
-  <p>Dev and beta no longer include <code>presets.py</code>. On master, these commands exist:</p>
-  <div class="tw"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-    <tr><td><code>.presets</code></td><td>Shows ready-made module packs</td></tr>
-    <tr><td><code>.loadpreset</code> (<code>.lp</code>)</td><td>Loads a preset file</td></tr>
-    <tr><td><code>.addtofolder</code> (<code>.af</code>), <code>.removefromfolder</code> (<code>.rff</code>)</td><td>Edits your custom module folder</td></tr>
-    <tr><td><code>.folderload</code> (<code>.fl</code>)</td><td>Sends a folder as a preset file</td></tr>
-    <tr><td><code>.loadaliases</code> (<code>.la</code>), <code>.aliasload</code> (<code>.al</code>)</td><td>Imports or exports aliases as a file</td></tr>
-  </tbody></table></div>
-  <div class="pgr"><a href="#daily">← Everyday tasks</a><a href="#inline">Inline bot and access →</a></div>
+  <div class="pgr"><a href="#daily">← Everyday tasks</a><a href="#perms">Security and permissions →</a></div>
 </section>
 
-<section id="inline">
-  <h1>Inline bot and access</h1>
-  <p class="lead">The personal inline bot handles forms and buttons. The security system controls who may run commands and press those buttons.</p>
-  <h2>Why there is a second bot</h2><p>Commands come from your own account, but Telegram needs a bot for inline forms. Heroku configures one through @BotFather. It displays <code>.config</code> menus, confirmations, galleries and paginated lists. Send <code>/profile</code> to that bot to check your prefix or reset it.</p>
-  <h2>Who can run commands?</h2><p>Your outgoing commands pass the permission check. Other users have no default access. Open <code>.security</code> for global permissions, <code>.security command_name</code> for a particular command and <code>.inlinesec</code> for inline handlers. <code>.querysec</code> toggles queries from other users.</p>
-  <h2>One temporary rule</h2><p><code>.tsec user @username ping 1h</code> offers to grant one person the ping command for an hour. Run <code>.tsec</code> without arguments to list active rules. You can also target a chat or a security group.</p>
-  <h2>Chat blocks and watchers</h2><p><code>.blacklist</code> blocks a chat and <code>.unblacklist</code> restores it. If a background watcher is noisy in one chat, run <code>.watcherbl ModuleName</code> there instead of removing the whole module.</p>
+<section id="perms">
+  <h1>Security and permissions</h1>
+  <p class="lead">Every command carries a bitmask of who may run it. Inline buttons inherit the security of the command that created them.</p>
+
+  <h2>The bitmask</h2>
+  <p>The owner always passes. Then bits add up: a security group contributes its own, chat rights grant the GROUP_* bits, a private chat with the account grants PM, and EVERYONE opens the command to all. By default a command has only OWNER. In <code>.security</code>, toggles switch bits off: a bit disabled globally is disabled for every command.</p>
+  <div class="tw"><table><thead><tr><th>Bit</th><th>Who gets it</th></tr></thead><tbody>
+    <tr><td><code>OWNER</code></td><td>Owner and co-owners in the owner group</td></tr>
+    <tr><td><code>GROUP_OWNER</code></td><td>Group creator</td></tr>
+    <tr><td><code>GROUP_ADMIN_*</code></td><td>Group admins per right: add members, change info, ban, delete, pin, invite</td></tr>
+    <tr><td><code>GROUP_ADMIN</code></td><td>Any group admin</td></tr>
+    <tr><td><code>GROUP_MEMBER</code></td><td>Any group member</td></tr>
+    <tr><td><code>PM</code></td><td>Anyone in a private chat with the account</td></tr>
+    <tr><td><code>EVERYONE</code></td><td>Everyone, including inline queries</td></tr>
+  </tbody></table></div>
+  <p>Modules do the same with decorators: <code>@loader.owner</code>, <code>@loader.group_admin</code>, <code>@loader.pm</code>, <code>@loader.unrestricted</code>, plus one per admin right.</p>
+
+  <h2>Targeted rules and groups</h2>
+  <p><code>.tsec user @username ping 1h</code> offers to grant one person the ping command for an hour. Rules can target a command, a module or an inline handler, and the subject can be a user, a chat or a security group. <code>.tsec</code> without arguments lists active rules. Security groups are named user lists with permission sets: <code>.newsgroup</code>, <code>.sgroupadd</code>, <code>.sgroupdel</code>.</p>
+
+  <h2>Inline bot and buttons</h2>
+  <p>The inline bot serves forms and buttons, and it is a second MTProto client: its session <code>ataraxia-&lt;id&gt;-bot.atsession</code> sits next to yours under the same key. The bot is created through @BotFather on first start unless you supply a token. <code>.config</code> menus, confirmations and paginated lists run through it.</p>
+  <p>Form buttons inherit the security of the calling command. A module can change that with <code>force_me</code> (owner only), <code>always_allow</code> (an explicit allow-list) or <code>disable_security</code> (no checks). Forms live for a day by default, after which callback buttons stop working; url buttons keep working. <code>.querysec</code> toggles whether strangers can use inline queries.</p>
+
+  <h2>Restrictions on external modules</h2>
+  <p>There is no sandbox, but a few guardrails exist. A module with <code>allow_paid_stars = False</code> cannot send paid star requests: the attempt raises <code>PermissionError</code>. Importing <code>aiogram</code> is rejected at load time: the inline bot already exists as <code>self.inline</code>, and aiogram is never installed from <code># requires:</code>. Imports of <code>telethon</code> and <code>herokutl</code> are redirected to ataraxia-tl, so older code often works unchanged, but test it anyway.</p>
+
+  <h2>FloodWait protection</h2>
+  <p>The dispatcher counts commands per user and per chat over time; over the limit, the command is not executed. The owner is exempt. The API limiter additionally throttles MTProto requests themselves: the <code>local_floodwait</code> setting decides how many seconds to wait locally when a FloodWait threatens, up to 3600.</p>
+
   <blockquote class="red"><span class="bt">Co-owner access</span><p><code>.owneradd</code> grants broad permissions. For one or two commands, a targeted <code>.tsec</code> rule is usually a better fit.</p></blockquote>
   <div class="pgr"><a href="#cmds">← All commands</a><a href="#r">.e and reply →</a></div>
 </section>
 
 <section id="r">
   <h1><code>.e</code>: Python in chat</h1>
-  <p class="lead">Write a Python expression after <code>.e</code>. Heroku evaluates it using <code>meval</code> inside the running userbot process and sends back the result.</p>
+  <p class="lead">Write a Python expression after <code>.e</code>. ataraxia evaluates it using <code>meval</code> inside the running userbot process and sends back the result.</p>
   <div class="codetop"><span>Saved Messages</span></div>
   <pre><code>.e 2 + 2
 .e "hello".upper()
 .e await client.get_me()
 .e print("hello from Python")</code></pre>
-  <p>Top-level <code>await</code> works, <code>print()</code> output is captured, and Heroku displays execution time. The code is real Python running with Heroku's permissions, not a sandbox. The evaluator masks several known secrets in its output, but do not rely on that to safely run code from strangers.</p>
+  <p>Top-level <code>await</code> works, <code>print()</code> output is captured, and ataraxia displays execution time. The code is real Python running with ataraxia's permissions, not a sandbox.</p>
 
   <h2>Names available inside .e</h2>
   <div class="tw"><table><thead><tr><th>Name</th><th>Meaning</th></tr></thead><tbody>
@@ -513,15 +567,15 @@ bash docker.sh</code></pre>
     <tr><td><code>r</code>, <code>reply</code></td><td>The message you replied to, or <code>None</code></td></tr>
     <tr><td><code>client</code>, <code>c</code></td><td>Telegram client</td></tr>
     <tr><td><code>chat</code></td><td>The command message's destination (<code>message.to_id</code>)</td></tr>
-    <tr><td><code>db</code>, <code>lookup</code>, <code>self</code></td><td>Database, module lookup and Evaluator instance</td></tr>
-    <tr><td><code>utils</code>, <code>loader</code>, <code>main</code></td><td>Heroku helpers</td></tr>
-    <tr><td><code>herokutl</code>, <code>telethon</code>, <code>hikkatl</code></td><td>Three names referring to herokutl</td></tr>
+    <tr><td><code>db</code>, <code>lookup</code>, <code>self</code></td><td>Database, module lookup and Executor instance</td></tr>
+    <tr><td><code>utils</code>, <code>loader</code>, <code>main</code></td><td>ataraxia helpers</td></tr>
+    <tr><td><code>ataraxiatl</code>, <code>telethon</code>, <code>herokutl</code></td><td>Three names for the same library</td></tr>
   </tbody></table></div>
-  <p>Herokutl's Telegram TL functions and types are also exposed under their class names. <code>-so</code> or <code>--skip-output</code> runs code without sending the usual result; on master put it immediately after <code>.e</code>. If you send <code>.e</code> with no code while replying to a text message, Heroku tries to evaluate the replied-to text. Read it first.</p>
+  <p>Telegram TL functions and types are exposed under their class names, loaded lazily for the ones your code mentions. The <code>db</code> variable is wrapped during execution: <code>db.set("ataraxia.security", "owner", ...)</code> is forbidden, so the owner cannot be changed through eval.</p>
 
   <h2>What is r?</h2>
   <p><code>r</code> is the same object as <code>reply</code>, returned by <code>await message.get_reply_message()</code>. Reply to a message and send <code>.e r.text</code>. With no reply, both names are <code>None</code>, so <code>r.text</code> raises an error.</p>
-  <p>The reference below was checked against the installed herokutl 2.1.0 Message class used by master. Dev depends on herokutl 2.2.0.dev2 and may provide additional rich-message behavior. Properties are read without <code>await</code>; async methods require it.</p>
+  <p>The reference below was checked against the ataraxia-tl Message class (a Telethon fork). Properties are read without <code>await</code>; async methods require it.</p>
   <div class="subnav" aria-label="Reply reference"><a href="#r-fields">Text and chat</a><a href="#r-media">Media</a><a href="#r-actions">Methods</a><a href="#r-examples">Examples</a></div>
 
   <h2 id="r-fields">Text, sender and chat</h2>
@@ -541,20 +595,19 @@ bash docker.sh</code></pre>
 
   <h2 id="r-media">Media, files and buttons</h2>
   <div class="tw"><table><thead><tr><th>Property on r</th><th>Meaning</th></tr></thead><tbody>
-    <tr><td><code>media</code>, <code>file</code></td><td>Raw media and a convenient File wrapper for photos or documents. <code>file</code> may be <code>None</code></td></tr>
+    <tr><td><code>media</code>, <code>file</code></td><td>Raw media and a convenient File wrapper. <code>file</code> may be <code>None</code></td></tr>
     <tr><td><code>photo</code>, <code>document</code></td><td>Photo or document when present</td></tr>
     <tr><td><code>video</code>, <code>video_note</code>, <code>gif</code></td><td>Video, round video or animation</td></tr>
     <tr><td><code>audio</code>, <code>voice</code>, <code>sticker</code></td><td>Audio, voice note or sticker</td></tr>
     <tr><td><code>web_preview</code>, <code>contact</code>, <code>geo</code></td><td>Web preview, contact or coordinates</td></tr>
     <tr><td><code>venue</code>, <code>poll</code>, <code>dice</code>, <code>game</code>, <code>invoice</code></td><td>Place, poll, dice roll, game or invoice</td></tr>
-    <tr><td><code>buttons</code>, <code>button_count</code>, <code>reply_markup</code></td><td>Buttons by row, total button count and raw markup</td></tr>
+    <tr><td><code>buttons</code>, <code>button_count</code>, <code>reply_markup</code></td><td>Buttons by row, total count and raw markup</td></tr>
     <tr><td><code>media_unread</code>, <code>grouped_id</code></td><td>Media unread flag and album/group ID</td></tr>
   </tbody></table></div>
-  <p>When <code>r.file</code> exists, it may have <code>name</code>, <code>ext</code>, <code>mime_type</code>, <code>size</code>, <code>width</code>, <code>height</code>, <code>duration</code>, <code>title</code>, <code>performer</code>, <code>emoji</code>, <code>sticker_set</code> and <code>id</code>. An image will not have a song title. Check for a file before reading its fields.</p>
+  <p>When <code>r.file</code> exists, it may have <code>name</code>, <code>ext</code>, <code>mime_type</code>, <code>size</code>, <code>width</code>, <code>height</code>, <code>duration</code>, <code>title</code>, <code>performer</code>, <code>emoji</code>, <code>sticker_set</code> and <code>id</code>. An image will not have a song title.</p>
 
   <h2>Forwards, reactions and raw fields</h2>
-  <p><code>forward</code> and <code>fwd_from</code> describe forwarding. <code>views</code>, <code>forwards</code> and <code>replies</code> hold counts or reply data if Telegram supplied them. <code>reactions</code>, <code>pinned</code>, <code>post_author</code>, <code>silent</code>, <code>noforwards</code>, <code>via_bot_id</code>, <code>via_bot</code>, <code>via_input_bot</code>, <code>ttl_period</code> and <code>restriction_reason</code> are available when relevant. Service messages can contain <code>action</code> and <code>action_entities</code>.</p>
-  <p>There are more raw fields such as <code>saved_peer_id</code>, <code>from_scheduled</code>, <code>legacy</code>, <code>edit_hide</code>, <code>invert_media</code>, <code>offline</code>, <code>effect</code>, <code>factcheck</code>, <code>suggested_post</code> and <code>rich_message</code>. They depend on the message type and herokutl version.</p>
+  <p><code>forward</code> and <code>fwd_from</code> describe forwarding. <code>views</code>, <code>forwards</code> and <code>replies</code> hold counts or reply data if Telegram supplied them. <code>reactions</code>, <code>pinned</code>, <code>post_author</code>, <code>silent</code>, <code>noforwards</code>, <code>via_bot_id</code>, <code>via_input_bot</code>, <code>ttl_period</code> and <code>restriction_reason</code> are available when relevant. Service messages can contain <code>action</code> and <code>action_entities</code>. More raw fields such as <code>saved_peer_id</code>, <code>from_scheduled</code>, <code>legacy</code>, <code>edit_hide</code>, <code>invert_media</code>, <code>offline</code>, <code>effect</code>, <code>factcheck</code>, <code>suggested_post</code> and <code>rich_message</code> depend on the message type and ataraxia-tl version.</p>
 
   <h2 id="r-actions">Message methods</h2>
   <p>Every method in this table needs <code>await</code> except <code>get_entities_text()</code>.</p>
@@ -588,18 +641,20 @@ bash docker.sh</code></pre>
 .e await r.react("👍")
 .e await r.download_media()</code></pre>
   <p><code>r.raw_text</code> may be <code>None</code>, so the counting examples use <code>or ""</code>. <code>r.file.name</code> fails without an attached file. Even <code>get_sender()</code> may return <code>None</code>. You cannot edit someone else's message merely because you obtained it through a reply.</p>
+  <p>Sending bare <code>.e</code> as a reply to a message containing code makes the evaluator run the replied-to text. Read it first.</p>
+
   <h2>Output and other languages</h2>
-  <p><code>-so</code> suppresses the usual result: <code>.e -so await r.delete()</code>. Evaluator displays Python errors with a traceback and blocks <code>db.set("heroku.security", "owner", ...)</code>. The masking of known secrets is a backup measure, not a security boundary.</p>
-  <p>For other languages use <code>.ecpp</code> (C++), <code>.ec</code> (C), <code>.ers</code> (Rust), <code>.eg</code> (Go) or <code>.enode</code> (JavaScript). Their compilers or runtimes must be installed separately. They do not provide the Python variable <code>r</code>.</p>
-  <div class="pgr"><a href="#inline">← Inline bot and access</a><a href="#module">Writing a module →</a></div>
+  <p>The last expression's value is shown automatically; <code>print()</code> output is captured and shown alongside the execution time. Errors come back as a traceback: the last line usually names the cause. Phone numbers, session strings, tokens and keys are masked in output; that is a safety net, not a reason to print secrets. Long output becomes a paginated inline form or a file.</p>
+  <p>For other languages use <code>.ecpp</code> (C++), <code>.ec</code> (C) or <code>.enode</code> (JavaScript). Their compilers or runtimes must be installed separately. They do not provide the Python variable <code>r</code>.</p>
+  <div class="pgr"><a href="#perms">← Security</a><a href="#module">Writing a module →</a></div>
 </section>
 
 <section id="module">
   <h1>Writing a module</h1>
-  <p class="lead">A module is a Python file defining a class derived from <code>loader.Module</code>. Upload the file to Telegram and reply to it with <code>.loadmod</code>.</p>
+  <p class="lead">A module is a Python file defining a class derived from <code>loader.Module</code>. Upload it to Telegram and reply with <code>.lm</code>, or drop it into <code>loaded_modules/</code>.</p>
   <h2>A minimal command</h2>
   <div class="codetop"><span>hello.py</span></div>
-  <pre><code>from heroku import loader, utils
+  <pre><code>from ataraxia import loader, utils
 
 
 @loader.tds
@@ -613,17 +668,10 @@ class HelloMod(loader.Module):
         """Send a greeting"""
         await utils.answer(message, "Hello")</code></pre>
   <p>The command becomes <code>.hello</code>. The method docstring is shown in help. Alternatively, name the method <code>hellocmd</code>, whose <code>cmd</code> suffix is removed from the command name.</p>
-  <h2>Arguments and a reply</h2>
-  <p><code>utils.get_args_raw(message)</code> returns the text after the command. <code>utils.get_args(message)</code> splits it into arguments. <code>await message.get_reply_message()</code> retrieves the message being replied to:</p>
-  <div class="codetop"><span>inside a module class</span></div>
-  <pre><code>@loader.command()
-async def wordscmd(self, message):
-    """Count words in a reply"""
-    reply = await message.get_reply_message()
-    if not reply:
-        await utils.answer(message, "Reply to a text message")
-        return
-    await utils.answer(message, str(len((reply.raw_text or "").split())))</code></pre>
+
+  <h2>Arguments and replies</h2>
+  <p><code>utils.get_args_raw(message)</code> returns the text after the command. <code>utils.get_args(message)</code> splits it into arguments. <code>await message.get_reply_message()</code> retrieves the message being replied to. <code>await utils.answer(message, rich="markdown")</code> sends a rich message from your account: headings, tables and nested lists, falling back to plain text.</p>
+
   <h2>Configuration and saved data</h2>
   <div class="codetop"><span>inside a module class</span></div>
   <pre><code>def __init__(self):
@@ -633,7 +681,8 @@ async def wordscmd(self, message):
             validator=loader.validators.String(),
         ),
     )</code></pre>
-  <p>This appears in <code>.config</code> and can be read with <code>self.config["greeting"]</code>. For module-owned persistent data use <code>self.get("key", default)</code> and <code>self.set("key", value)</code>. <code>self.pointer</code> gives an auto-saving list or dict wrapper.</p>
+  <p>This appears in <code>.config</code> and can be read with <code>self.config["greeting"]</code>. Validators include <code>Boolean</code>, <code>Integer</code>, <code>Float</code>, <code>Choice</code>, <code>MultiChoice</code>, <code>Series</code>, <code>Link</code>, <code>Hidden</code> and more. For module-owned persistent data use <code>self.get("key", default)</code> and <code>self.set("key", value)</code>; <code>self.pointer</code> returns an auto-saving list or dict wrapper.</p>
+
   <h2>Watching messages and scheduling work</h2>
   <div class="codetop"><span>inside a module class</span></div>
   <pre><code>@loader.watcher("in", "only_messages", "no_commands")
@@ -644,100 +693,88 @@ async def watcher(self, message):
 @loader.loop(interval=300, autostart=True)
 async def ticker(self):
     await self.client.send_message("me", "Five minutes passed")</code></pre>
-  <p>The watcher tags restrict it to incoming messages, excluding service events and userbot commands. A loop's interval is measured in seconds. A watcher replying to every message can quickly hit Telegram rate limits, so narrow its conditions.</p>
-  <h2>Buttons and lifecycle</h2>
-  <p><code>self.inline.form(text="Menu", message=message, reply_markup=[{"text": "Close", "action": "close"}])</code> creates an inline form when the personal inline bot is available. Button callbacks receive an object with <code>answer()</code>, <code>edit()</code>, <code>delete()</code> and <code>unload()</code>.</p>
-  <p>Use <code>client_ready</code> after the Telegram client becomes available, <code>config_complete</code> after configuration loads and <code>on_unload</code> for cleanup. A <code>loader.LoadError("reason")</code> raised during loading tells the user why the module cannot run. Module objects provide <code>self.client</code>, <code>self.db</code>, <code>self.inline</code>, <code>self.lookup</code>, <code>self.tg_id</code> and <code>self.get_prefix()</code>.</p>
-  <h2>File metadata and libraries</h2>
+  <p>The watcher tags restrict it to incoming messages, excluding service events and userbot commands. The full tag set is wider: <code>out</code>, <code>only_media</code>, <code>no_pm</code>, <code>only_groups</code>, <code>regex</code>, <code>contains</code>, <code>startswith</code>, <code>from_id</code>, <code>chat_id</code> and more, combinable directly inside <code>@loader.watcher(...)</code>. A loop's interval is measured in seconds. A watcher replying to every message can quickly hit Telegram rate limits, so narrow its conditions.</p>
+  <p>For raw TL updates there is <code>@loader.raw_handler(UpdateType)</code>: reactions, boosts, business events and the rest arrive as raw objects, and the handler is unregistered when the module unloads, leaving no zombie handlers.</p>
+
+  <h2>Buttons</h2>
+  <div class="codetop"><span>inside a module class</span></div>
+  <pre><code>async def pressed(self, call):
+    await call.answer("Done")
+    await call.edit("Button pressed")
+
+@loader.command()
+async def menucmd(self, message):
+    """Open menu"""
+    await self.inline.form(
+        text="Menu",
+        message=message,
+        reply_markup=[
+            {"text": "Press", "callback": self.pressed},
+            {"text": "Close", "action": "close"},
+        ],
+    )</code></pre>
+  <p>Callbacks receive <code>call</code> with <code>answer()</code>, <code>edit()</code>, <code>delete()</code> and unload access. Button keys include <code>callback</code>, <code>url</code>, <code>input</code>, <code>data</code>, <code>web_app</code>, <code>copy</code>, ready-made actions like <code>close</code>, plus <code>style</code> (primary, success, danger, link) and <code>emoji_id</code>. Paginated lists use <code>self.inline.list(...)</code>.</p>
+
+  <h2>Lifecycle</h2>
+  <p>Use <code>client_ready</code> after the Telegram client becomes available, <code>config_complete</code> after configuration loads and <code>on_unload</code> for cleanup. A <code>loader.LoadError("reason")</code> raised during loading tells the user why the module cannot run; <code>loader.SelfUnload</code> quietly unloads it when a condition is not met.</p>
+
+  <h2>What lives on self</h2>
+  <div class="tw"><table><thead><tr><th>Name</th><th>Purpose</th></tr></thead><tbody>
+    <tr><td><code>self.client</code></td><td>Telegram client</td></tr>
+    <tr><td><code>self.db</code></td><td>Shared module database</td></tr>
+    <tr><td><code>self.get</code>, <code>self.set</code>, <code>self.pointer</code></td><td>Module data; pointer auto-saves list and dict changes</td></tr>
+    <tr><td><code>self.inline</code></td><td>Forms and lists</td></tr>
+    <tr><td><code>self.inline.bot</code></td><td>Bot API shaped facade over the MTProto inline bot</td></tr>
+    <tr><td><code>self.lookup("Name")</code></td><td>Another loaded module</td></tr>
+    <tr><td><code>self.tg_id</code></td><td>Current account's Telegram id</td></tr>
+    <tr><td><code>self.get_prefix()</code></td><td>Current command prefix</td></tr>
+    <tr><td><code>self.import_lib(url)</code></td><td>Load an external library with a <code>loader.Library</code> class</td></tr>
+  </tbody></table></div>
+
+  <h2 id="mod-inline">The inline bot as Bot API</h2>
+  <p><code>self.inline.bot</code> is a Bot API shaped facade: <code>send_message</code>, <code>edit_message_text</code>, <code>send_photo</code>, <code>send_media_group</code>, <code>answer_inline_query</code>, <code>answer_callback_query</code>, <code>set_my_commands</code>, <code>get_chat_member</code>, <code>get_file</code> and more. Under the hood it issues real MTProto requests as the bot, so <code>download_file</code> has no size limits. Anything the facade lacks goes through <code>await self.inline.bot.invoke(functions.SomeRequest(...))</code>. It accepts and returns plain objects, dicts work too, and errors come as <code>TelegramBadRequest</code>, <code>TelegramForbiddenError</code>, <code>TelegramRetryAfter</code> with <code>retry_after</code>, all carrying the facade method name.</p>
+
+  <h2 id="mod-guest">Guest commands</h2>
+  <p>A guest command is invoked as <code>@botusername command args</code> from any chat, even ones the bot is not in (Bot API guest mode). Mark it with <code>@loader.guest_command()</code> or name it <code>&lt;cmd&gt;_guest_handler</code>; it receives <code>(message, args)</code> and answers via <code>self.inline.answer_guest(message, ...)</code>:</p>
+  <div class="codetop"><span>inside a module class</span></div>
+  <pre><code>@loader.guest_command()
+async def ask(self, message, args):
+    await self.inline.answer_guest(message, "from a chat the bot is not in")</code></pre>
+  <p>Only the owner or members of the owner group may invoke guest commands. A bare mention or an unknown command is answered with silence. No guest commands ship built in; this is an external-module feature. The answer returns an editable <code>InlineMessage</code>. Buttons in guest chats are open to everyone by default unless you pass <code>force_me</code> or <code>always_allow</code>.</p>
+
+  <h2 id="mod-meta">File metadata</h2>
   <div class="codetop"><span>at the top of a module file</span></div>
   <pre><code># meta developer: @username
 # requires: requests
-# scope: heroku_min 2.1.0
+# packages: ffmpeg
+# scope: ataraxia 0.1.0
 
 __version__ = (1, 0, 0)</code></pre>
-  <p>The loader reads these lines to display the developer, install a pip dependency and check minimum Heroku version. Older <code>telethon</code>, <code>hikkatl</code> and <code>hikka</code> imports are redirected to Heroku's packages; test older modules anyway. Shared libraries can be loaded with <code>self.import_lib(url)</code> and need a <code>loader.Library</code> subclass whose name ends in <code>Lib</code>.</p>
-  <p>For working examples, read <code>heroku/modules/translate.py</code> and <code>heroku/modules/test.py</code> in the branch you are targeting.</p>
-  <div class="pgr"><a href="#r">← .e and reply</a><a href="#beta">Beta →</a></div>
-</section>
-
-<section id="beta">
-  <h1>Beta</h1>
-  <p class="lead">The public testing branch for the next release. At the date of this handbook, <code>origin/beta</code> and <code>origin/dev</code> both pointed to commit <code>dba41c58</code>. Their code was identical then.</p>
-  <h2>Why use beta?</h2>
-  <p>It lets testers try changes before they reach master. It is not a promise of stability or a separate feature set from dev at the studied commit.</p>
-  <div class="pc"><div class="plus"><h4>Upsides</h4><ul><li>New RichText and prefix features before master</li><li>Fixes that have not yet shipped in a stable release</li><li>A chance to test your own modules against the next version</li></ul></div><div class="minus"><h4>Trade-offs</h4><ul><li>Beta-tester check at startup</li><li>Changes can break older modules</li><li>Some master commands, including presets, are gone</li><li>Depends on <code>herokutl==2.2.0.dev2</code></li></ul></div></div>
-  <h2>The tester check</h2>
-  <p>Dev and beta fetch an allowed-ID list from <code>coddrago/modules-web</code>. If your account is not on it and the checked-out branch is not an ancestor of <code>origin/master</code>, Heroku attempts to reset the working tree to master and restarts. Do not switch branches while keeping uncommitted work in the Heroku checkout.</p>
-  <blockquote class="red"><span class="bt">A bug in this code path</span><p>After the reset it attempts <code>self.client.log_out()</code>, but the launcher does not create <code>self.client</code>. The exception is caught. Thus logout is not guaranteed in the studied commit; the reset attempt and restart can still happen.</p></blockquote>
-  <h2>Install beta</h2>
-  <p>For accounts with testing access, clone the repository and check out beta before installing dependencies:</p>
-  <div class="codetop"><span>terminal</span></div>
-  <pre><code>git clone https://github.com/coddrago/Heroku
-cd Heroku
-git checkout beta
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 -m heroku</code></pre>
-  <p>On an existing installation, stop Heroku, create a backup with <code>.backupall</code>, run <code>git fetch origin</code> and <code>git checkout beta</code>, activate your virtual environment, reinstall requirements and start Heroku. The <a href="#devb">dev page</a> describes the currently shared changes in detail.</p>
-  <div class="pgr"><a href="#module">← Writing a module</a><a href="#devb">Dev branch →</a></div>
-</section>
-
-<section id="devb">
-  <h1>Dev branch</h1>
-  <p class="lead">The studied dev commit reports Heroku 2.2.2 and <code>herokutl==2.2.0.dev2</code>. Beta pointed to the same commit at the time of writing; their names do not imply a code difference right now.</p>
-  <h2>Which branch to pick</h2>
-  <div class="tw"><table><thead><tr><th>Branch</th><th>Best for</th><th>Trade-off</th></tr></thead><tbody>
-    <tr><td><code>master</code>, 2.1.0</td><td>Everyday use</td><td>Does not yet have dev's additions</td></tr>
-    <tr><td><code>beta</code>, 2.2.2</td><td>Testing access and early feedback</td><td>Changes may break familiar behavior</td></tr>
-    <tr><td><code>dev</code>, 2.2.2</td><td>Following development or module compatibility work</td><td>Currently identical to beta, but future commits can diverge</td></tr>
-  </tbody></table></div>
-  <div class="pc"><div class="plus"><h4>Dev benefits</h4><ul><li>RichText support in messages and forms</li><li>Multiple prefixes and per-user prefixes</li><li>Better protection for secrets in logs and service channels</li><li>Per-account logging and a module filter</li></ul></div><div class="minus"><h4>Dev costs</h4><ul><li>Startup can attempt a reset to master without beta-tester access</li><li>Uses a development herokutl release</li><li>The presets module was removed</li><li>Dev-only APIs will not run on master</li></ul></div></div>
-
-  <h2>Changes you will notice</h2>
-  <h3>Prefixes and command conflicts</h3><p><code>.setprefix . ! ?</code> gives the owner multiple prefixes, the first being primary. People who already have permissions can receive a personal prefix with <code>.setprefix --user 123456789 !</code>. If installed modules claim the same command, Heroku offers a choice instead of silently replacing one.</p>
-  <h3>Module cache and updates</h3><p>External modules are cached on disk. When an ordinary module changes upstream, the loader can offer an update. Built-in updates and URLs you have marked for automatic updates do not ask again. Check the source when approving changed code.</p>
-  <h3>RichText and terminal</h3><p>Some built-in modules have a <code>rich_mode</code> setting for newer Telegram rich messages. Forms can use <code>self.inline.form(..., rich_message=...)</code>. Sudo password input in Terminal moved from editing a Saved Messages message to an inline form that passes the password to the process. <code>.kill</code> is an alias for <code>.terminate</code>.</p>
-  <h3>Logs and hardening</h3><p>Logs can be routed per account, and <code>.logs ModuleName</code> filters by module. Known session strings, phone numbers and tokens are masked in logs. The database/config are written via private temporary files, the session directory receives restricted permissions, and the bot checks its private service channel before reusing it for backups. Code-download URLs are validated more strictly.</p>
-
-  <h2>For module authors</h2>
-  <ul><li><code>self.create_task(coroutine)</code> tracks tasks so unloading a module can clean them up</li><li>The <code>Hidden</code> config validator registers values as secrets</li><li>Forms gain <code>rich_message</code> and <code>reply_to</code>; additional utilities expose memory, swap and rich output helpers</li><li>The old <code>_send_stats</code> block was removed</li></ul>
-
-  <h2>Removed or changed commands</h2>
-  <p><code>presets.py</code> is gone, so <code>.presets</code>, <code>.loadpreset</code>, folder commands and alias-file commands are absent. <code>.fcfg</code> was removed. <code>.cfg Module option value</code> still works on dev: it is now an alias of <code>.config</code>, whose handler also accepts direct values.</p>
-
-  <h2>Switch to dev or back</h2>
-  <p>Stop Heroku and back up your data first. In its directory, with the virtual environment active:</p>
-  <div class="codetop"><span>terminal</span></div>
-  <pre><code>git fetch origin
-git checkout dev
-pip install -r requirements.txt
-python3 -m heroku</code></pre>
-  <p>To return, replace <code>git checkout dev</code> with <code>git checkout master</code> and reinstall requirements. The database and sessions are outside Git, but switching does not replace a backup. Docker supports <code>docker-compose build --build-arg HEROKU_REF=dev</code>.</p>
-  <blockquote class="red"><span class="bt">Tester gate</span><p><code>version.check_branch</code> runs during startup on dev. Without a permitted account ID it may try to restore master and restart before normal commands load. The attempted logout contains the bug explained on the Beta page.</p></blockquote>
-  <div class="pgr"><a href="#beta">← Beta</a><a href="#faq">Troubleshooting →</a></div>
+  <p>The loader reads these lines to display the developer, install a uv dependency, install a system package, and enforce a minimum ataraxia version. The special scopes <code># scope: ffmpeg</code> and <code># scope: inline</code> require ffmpeg and a configured inline bot. Imports of <code>telethon</code> and <code>herokutl</code> are redirected to ataraxia-tl; test older modules anyway. For working examples, read <code>ataraxia/modules/translations.py</code> and <code>ataraxia/modules/test.py</code>.</p>
+  <p>For translations a module can define <code>strings_ru</code> and other suffixes. Shared libraries load via <code>self.import_lib(url)</code> with a <code>loader.Library</code> subclass whose name ends in <code>Lib</code>. Helpers like <code>utils.escape_html</code> and <code>utils.get_chat_id</code> live in <code>ataraxia/utils/</code>.</p>
+  <div class="pgr"><a href="#r">← .e and reply</a><a href="#faq">Troubleshooting →</a></div>
 </section>
 
 <section id="faq">
   <h1>Troubleshooting</h1>
   <p class="lead">Start with terminal output and <code>.logs</code>. The last line of an error often identifies the problem.</p>
-  <details><summary>Heroku warns about running as root</summary><div class="b"><p>Use a regular system user. If running as root is intentional, start with <code>python3 -m heroku --root</code>. External modules will then have root privileges too.</p></div></details>
-  <details><summary>Python 3.10 or newer is required</summary><div class="b"><p>Check <code>python3 --version</code>. Install a newer version, recreate <code>.venv</code> with that Python, then reinstall <code>requirements.txt</code>.</p></div></details>
-  <details><summary>“Check that this is the only instance running”</summary><div class="b"><p>Another process has the session file open. Stop the duplicate. If you used screen, reconnect with <code>screen -r heroku</code> rather than starting a second copy.</p></div></details>
-  <details><summary>API ID or hash is rejected</summary><div class="b"><p>Check that both values are from the same application on my.telegram.org. Replace the incorrect <code>config.json</code> values and run setup again.</p></div></details>
-  <details><summary>Telegram reports FloodWait</summary><div class="b"><p>Wait for the period stated in the error before trying again. Repeated login attempts may make it longer.</p></div></details>
-  <details><summary>The Telegram session stopped working</summary><div class="b"><p>Check Telegram's device list. If you revoked the session or used the same file concurrently on two machines, sign in again.</p></div></details>
-  <details><summary>The inline bot was not created</summary><div class="b"><p>@BotFather may limit new bots. You can use an existing bot via <code>.ch_heroku_bot</code> and <code>.ch_bot_token</code>. Keep its token private.</p></div></details>
-  <details><summary>Commands do not respond</summary><div class="b"><p>Check that the process is running, the command comes from the authorized account, and you are using the current prefix. Your inline bot's <code>/profile</code> shows the prefix. A chat blacklist can also block commands.</p></div></details>
-  <details><summary>A module will not load</summary><div class="b"><p>Open <code>.logs</code> for the cause: missing dependency, incompatible version, code error or unavailable inline bot. Try disabling the failing module before resetting the whole installation.</p></div></details>
-  <details><summary>I want to start from scratch</summary><div class="b"><p>Save a backup first. <code>python3 -m heroku -w</code> asks for confirmation and removes config, sessions and installed modules. <code>.cleardb</code> clears only the database.</p></div></details>
-  <h2>Getting help</h2><p><code>.support</code> sends the project's support links. Review logs for private data before posting them in a public chat.</p>
-  <div class="pgr"><a href="#devb">← Dev branch</a><a href="#about">Back to start ↑</a></div>
+  <details><summary>ataraxia-tl is required, use uv sync</summary><div class="b"><p>Dependencies are unresolved. Run <code>uv sync</code> in the project directory, then <code>uv run -m ataraxia</code>. If uv is missing, install it: <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code>.</p></div></details>
+  <details><summary>Running it as a script fails</summary><div class="b"><p>ataraxia cannot be run as a file. Run it as a package: <code>uv run -m ataraxia</code> from the repository root.</p></div></details>
+  <details><summary>SessionDecryptError or SessionKeyMissing</summary><div class="b"><p>The <code>ataraxia.key</code> file is missing or does not match the sessions. Sessions are useless without the key: you will have to log in again. Check whether you copied the project without the key.</p></div></details>
+  <details><summary>The web UI does not open</summary><div class="b"><p>The default port is random; see the startup banner or set your own with <code>--port</code>. On a VPS use <code>.weburl</code> or <code>--proxy-pass</code>: the tunnel gives you a public https link. <code>--no-web</code> disables the web UI entirely.</p></div></details>
+  <details><summary>Telegram reports FloodWait</summary><div class="b"><p>Wait for the period stated in the error before trying again. Repeated login attempts may make it longer. The <code>.api_fw_protection</code> limiter waits locally and prevents FloodWait from happening.</p></div></details>
+  <details><summary>The inline bot was not created</summary><div class="b"><p>@BotFather may limit new bots. You can use an existing bot via <code>.ch_ataraxia_bot &lt;name&gt;</code> and <code>.ch_bot_token &lt;token&gt;</code>. Keep the token private.</p></div></details>
+  <details><summary>Commands do not respond</summary><div class="b"><p>Check that the process is running and the command comes from the authorized account. In groups, commands require mentioning your username by default: disable that with NoNick (<code>.nonickchat</code> in that chat). Also check your prefix and chat blacklists.</p></div></details>
+  <details><summary>A module will not load</summary><div class="b"><p>Open <code>.logs</code> for the cause: missing dependency, incompatible ataraxia version, module code error or an unavailable inline bot. Modules importing aiogram are rejected outright: use <code>self.inline</code>. Try disabling the failing module before resetting the installation.</p></div></details>
+  <details><summary>An update failed on dependencies</summary><div class="b"><p><code>git pull</code> already went through, so the code on disk is new while the running one is old. The bot will not restart and offers a retry button. Check the error output: usually the network or git.break.wtf being unreachable for ataraxia-tl.</p></div></details>
+  <details><summary>I want to start from scratch</summary><div class="b"><p>Save a backup first. <code>.cleardb</code> clears only the database; the session and key files are removed manually from the project directory, after which the next start offers a fresh login.</p></div></details>
+  <h2>Getting help</h2><p>Project channel: <a href="https://t.me/ataraxia_ub">@ataraxia_ub</a>, chat: <a href="https://t.me/ataraxia_talks">@ataraxia_talks</a>. <code>.support</code> sends the same links. Review logs for private data before posting them in a public chat.</p>
+  <div class="pgr"><a href="#module">← Writing a module</a><a href="#about">Back to start ↑</a></div>
 </section>
 
 </div></main>
 </div>
-<footer><div class="page"><p>Documentation by <a href="https://github.com/ziahka">ziahka</a>. Information current as of 25 September 2026. Based on <a href="https://github.com/coddrago/Heroku">Heroku source code</a>, master 2.1.0 and dev 2.2.2.</p></div></footer>
+<footer><div class="page"><p>Documentation by <a href="https://github.com/sorried">pulsaryx</a>. Based on <a href="https://git.break.wtf/xenside/ataraxia">ataraxia source code</a>, main branch, codename Rise. Project license AGPLv3.</p></div></footer>
 <script>
 (function(){
   var secs=[].slice.call(document.querySelectorAll('section'));
